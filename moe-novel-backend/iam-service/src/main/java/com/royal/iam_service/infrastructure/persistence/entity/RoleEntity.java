@@ -1,0 +1,41 @@
+package com.royal.iam_service.infrastructure.persistence.entity;
+
+import com.evo.common.entity.AuditEntity;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+import java.util.UUID;
+
+@Entity
+@Data
+@EqualsAndHashCode(callSuper = false)
+@AllArgsConstructor
+@NoArgsConstructor
+@EntityListeners(AuditingEntityListener.class)
+@Table(name = "roles")
+public class RoleEntity extends AuditEntity {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "id")
+    private UUID id;
+
+    @Column(nullable = false, length = 50)
+    private String name;
+
+    @Column(name = "is_root")
+    private Boolean root = false;
+
+    @Column(name = "deleted")
+    private boolean deleted = false;
+}
+
