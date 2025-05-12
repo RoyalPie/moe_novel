@@ -1,6 +1,7 @@
 package com.royal.novel_service.domain;
 
 import com.evo.common.webapp.support.IdUtils;
+import com.royal.novel_service.domain.command.CreateNovelChapterCmd;
 import com.royal.novel_service.domain.command.CreateNovelCmd;
 import com.royal.novel_service.domain.command.CreateNovelGenreCmd;
 import com.royal.novel_service.domain.command.CreateNovelTagCmd;
@@ -34,6 +35,7 @@ public class Novel {
     private NovelStatus status;
     private int totalViews;
     private int totalFollows;
+    private boolean deleted;
 
     private List<NovelGenre> novelGenres;
     private List<NovelTag> novelTags;
@@ -49,8 +51,10 @@ public class Novel {
         this.status = cmd.getNovelStatus();
         this.totalViews = 0;
         this.totalFollows = 0;
+        this.deleted = false;
         this.novelGenres = new ArrayList<>();
         this.novelTags = new ArrayList<>();
+        this.novelChapters = new ArrayList<>();
 
         if (cmd.getNovelGenres() != null) {
             cmd.getNovelGenres().forEach(createNovelGenrecmd -> {
@@ -63,6 +67,12 @@ public class Novel {
             cmd.getNovelTags().forEach(createNovelTagcmd -> {
                 createNovelTagcmd.setNovelId(this.novelId);
                 novelTags.add(new NovelTag(createNovelTagcmd));
+            });
+        }
+        if (cmd.getNovelChapters() != null) {
+            cmd.getNovelChapters().forEach(createNovelChaptercmd -> {
+                createNovelChaptercmd.setNovelId(this.novelId);
+                novelChapters.add(new NovelChapter(createNovelChaptercmd));
             });
         }
 
@@ -122,7 +132,28 @@ public class Novel {
                 }
             }
         }
+        if (cmd.getNovelChapters() != null && !cmd.getNovelChapters().isEmpty()) {
+            if (this.novelChapters == null) {
+                this.novelChapters = new ArrayList<>();
+            }
+
+            // Map existing roles by chapterId
+            Map<UUID, NovelChapter> existingChaptersMap = new HashMap<>();
+            for (NovelChapter chapter : this.novelChapters) {
+                existingChaptersMap.put(chapter.getChapterId(), chapter);
+            }
+
+            // Update or add new chapters
+            for (CreateNovelChapterCmd novelChapterCmd : cmd.getNovelChapters()) {
+                UUID chapterId = novelChapterCmd.getChapterId();
+                novelChapterCmd.setNovelId(this.novelId);
+                if (!existingChaptersMap.containsKey(chapterId)) {
+                    this.novelChapters.add(new NovelChapter(novelChapterCmd));
+                }
+            }
+        }
     }
+
 
     public void changeCoverImage(UUID fileId){
         this.coverImage = fileId;

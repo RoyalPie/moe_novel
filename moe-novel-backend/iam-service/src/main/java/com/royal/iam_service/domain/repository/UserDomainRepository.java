@@ -9,8 +9,12 @@ import java.util.UUID;
 
 public interface UserDomainRepository extends DomainRepository<User, UUID> {
     List<User> search(SearchUserQuery query);
+
     User getByUsername(String username);
+
     List<User> getAll();
+
     boolean existsByUsername(String username);
+
     Long count(SearchUserQuery searchUserQuery);
 }

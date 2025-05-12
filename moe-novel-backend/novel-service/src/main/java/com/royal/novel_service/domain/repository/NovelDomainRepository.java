@@ -10,11 +10,13 @@ import java.util.UUID;
 public interface NovelDomainRepository extends DomainRepository<Novel, UUID> {
     List<Novel> search(SearchNovelQuery searchNovelQuery);
 
-    Novel getByUsername(String novelName);
+    Novel getByNovelName(String novelName);
 
     List<Novel> getAll();
 
-    boolean existsByUsername(String novelName);
+    boolean existsByNovelName(String novelName);
 
     Long count(SearchNovelQuery searchNovelQuery);
+
+    List<String> getAllName();
 }

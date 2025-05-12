@@ -1,7 +1,8 @@
 package com.royal.novel_service.infrastructure.support.enums;
 
 public enum NovelStatus {
-    COMPLETED(),
+    COMPLETED,
     ON_GOING,
-    ON_HIATUS
+    ON_HIATUS,
+    CANCELED
 }

@@ -25,4 +25,5 @@ public class CreateNovelCmd {
 
     private List<CreateNovelGenreCmd> novelGenres;
     private List<CreateNovelTagCmd> novelTags;
+    private List<CreateNovelChapterCmd> novelChapters;
 }
