@@ -27,7 +27,6 @@ import java.util.UUID;
 @Table(name = "reviews")
 public class ReviewEnity {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(columnDefinition = "UUID", updatable = false, nullable = false)
     private UUID reviewId;
 

@@ -24,7 +24,6 @@ import java.util.UUID;
 @Table(name = "novel_genres")
 public class NovelGenreEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
     private UUID id;
 

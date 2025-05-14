@@ -33,7 +33,6 @@ import java.util.UUID;
 @Table(name = "chapters")
 public class ChapterEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(columnDefinition = "UUID", updatable = false, nullable = false)
     private UUID chapterId;
 

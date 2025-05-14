@@ -1,0 +1,167 @@
+import warnings
+import ebooklib
+from ebooklib import epub
+from bs4 import BeautifulSoup
+import os
+import argparse
+import base64
+import re
+import glob
+import json
+
+# Silence ebooklib warnings
+warnings.filterwarnings("ignore", category=UserWarning, module="ebooklib.epub")
+warnings.filterwarnings("ignore", category=FutureWarning, module="ebooklib.epub")
+
+def sanitize_name(name: str) -> str:
+    # Remove only illegal filesystem chars, keep spaces
+    # Illegal on Windows: <>:"/\|?* and control chars
+    safe = re.sub(r'[<>:"/\\|?\*\x00-\x1F]', '', name)
+    # Trim leading/trailing spaces
+    return safe.strip()
+
+def epub_to_chapters(epub_path: str, base_out_dir: str):
+    print(f"Processing {os.path.basename(epub_path)}…")
+    try:
+        book = epub.read_epub(epub_path)
+    except Exception as e:
+        print(f"  Error reading EPUB: {e}")
+        return
+
+    # 1) Extract metadata
+    title_list      = book.get_metadata('DC', 'title')
+    creator_list    = book.get_metadata('DC', 'creator')
+    subject_list    = book.get_metadata('DC', 'subject')
+    description_list= book.get_metadata('DC', 'description')
+
+    title       = title_list[0][0]       if title_list       else os.path.splitext(os.path.basename(epub_path))[0]
+    creator     = creator_list[0][0]     if creator_list     else ""
+    subject     = subject_list[0][0]     if subject_list     else ""
+    description = description_list[0][0] if description_list else ""
+
+    # 2) Prepare output folder named after the title (with spaces)
+    safe_title    = sanitize_name(title)
+    novel_out_dir = os.path.join(base_out_dir, safe_title)
+    os.makedirs(novel_out_dir, exist_ok=True)
+
+    # 2b) Extract and save cover image if present
+    cover_saved = False
+    for item in book.get_items_of_type(ebooklib.ITEM_IMAGE):
+        name = item.get_name().lower()
+        iid  = getattr(item, 'id', "").lower()
+        if 'cover' in name or 'cover' in iid:
+            ext = item.media_type.split('/')[-1]  # e.g. 'jpeg' or 'png'
+            cover_path = os.path.join(novel_out_dir, f"cover.{ext}")
+            try:
+                with open(cover_path, 'wb') as imgf:
+                    imgf.write(item.get_content())
+                print(f"  Saved cover image: {os.path.basename(cover_path)}")
+                cover_saved = True
+            except Exception as e:
+                print(f"  Error saving cover image: {e}")
+            break
+
+    if not cover_saved:
+        print("  No cover image found.")
+
+    # 3) Write metadata.json
+    metadata = {
+        "title":       title,
+        "creator":     creator,
+        "subject":     subject,
+        "description": description
+    }
+    meta_path = os.path.join(novel_out_dir, "metadata.json")
+    with open(meta_path, "w", encoding="utf-8") as mf:
+        json.dump(metadata, mf, ensure_ascii=False, indent=2)
+    print(f"  Wrote metadata.json")
+
+    # 4) Prepare skip keywords and images map
+    skip_keywords = ["cover", "contents", "toc", "table of contents"]
+    img_map = {}
+    for item in book.get_items():
+        if item.get_type() == ebooklib.ITEM_IMAGE:
+            try:
+                data_uri = (
+                    "data:image/{ext};base64,{data}"
+                    .format(
+                        ext=item.media_type.split("/")[-1],
+                        data=base64.b64encode(item.get_content()).decode("utf-8")
+                    )
+                )
+                img_map[item.get_name()] = data_uri
+            except Exception:
+                pass
+
+    # 5) Flatten TOC
+    def flatten_toc(toc):
+        for entry in toc:
+            if isinstance(entry, epub.Link):
+                yield entry
+            elif isinstance(entry, (list, tuple)):
+                yield from flatten_toc(entry)
+            elif hasattr(entry, "href") and hasattr(entry, "title"):
+                yield entry
+
+    # 6) Extract each chapter
+    chap_count = 0
+    for link in flatten_toc(book.toc):
+        if link.title and any(kw in link.title.lower() for kw in skip_keywords):
+            continue
+
+        href = link.href.split("#")[0]
+        item = book.get_item_with_href(href)
+        if not item:
+            continue
+
+        chap_count += 1
+        soup = BeautifulSoup(item.get_content(), "html.parser")
+        body = soup.body or soup
+        html_str = str(body)
+
+        # Replace images
+        for name, uri in img_map.items():
+            html_str = re.sub(
+                fr'src=["\'].*?{re.escape(name)}.*?["\']',
+                f'src="{uri}"', html_str
+            )
+
+        # Filename: zero-padded + sanitized title (spaces kept)
+        chapter_title = link.title or f"chapter {chap_count}"
+        safe_ch_title = sanitize_name(chapter_title)
+        filename = f"{chap_count:03d}_{safe_ch_title}.html"
+
+        out_path = os.path.join(novel_out_dir, filename)
+        try:
+            with open(out_path, "w", encoding="utf-8") as outf:
+                outf.write(f"<!-- {chapter_title} -->\n")
+                outf.write(html_str)
+            print(f"  Saved {filename}")
+        except Exception as e:
+            print(f"  Error saving {filename}: {e}")
+
+    print(f"Done! Extracted {chap_count} chapters into `{novel_out_dir}`\n")
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(
+        description="Convert EPUB(s) into per-chapter HTML files, with metadata."
+    )
+    parser.add_argument("epub_path", help="Path to an EPUB file or directory of EPUBs")
+    parser.add_argument(
+        "--out_dir",
+        default="chapters",
+        help="Base output directory (default: ./chapters)"
+    )
+    args = parser.parse_args()
+
+    # Batch or single
+    if os.path.isdir(args.epub_path):
+        pattern = os.path.join(args.epub_path, "*.epub")
+        epub_files = glob.glob(pattern) + glob.glob(pattern.upper())
+        for epub_file in sorted(set(epub_files)):
+            epub_to_chapters(epub_file, args.out_dir)
+    elif os.path.isfile(args.epub_path) and args.epub_path.lower().endswith(".epub"):
+        epub_to_chapters(args.epub_path, args.out_dir)
+    else:
+        print(f"Error: `{args.epub_path}` is not a valid EPUB file or directory.")
+        exit(1)

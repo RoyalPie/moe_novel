@@ -34,6 +34,4 @@ public class ChapterDomainRepositoryImpl extends AbstractDomainRepository<Chapte
     public Chapter getById(UUID uuid) {
         return entityMapper.toDomainModel(repository.findById(uuid).orElseThrow(() -> new RuntimeException("Chapter not found")));
     }
-
-
 }

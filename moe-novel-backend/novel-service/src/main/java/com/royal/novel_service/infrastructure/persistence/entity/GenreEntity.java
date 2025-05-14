@@ -27,7 +27,6 @@ import java.util.UUID;
 @Table(name = "genres")
 public class GenreEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(columnDefinition = "UUID", updatable = false, nullable = false)
     private UUID genreId;
 

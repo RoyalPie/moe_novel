@@ -10,7 +10,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -20,7 +19,6 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import java.util.Date;
 import java.util.UUID;
 
 @Entity
@@ -33,7 +31,6 @@ import java.util.UUID;
 @Table(name = "novels")
 public class NovelEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(columnDefinition = "UUID", updatable = false, nullable = false)
     private UUID novelId;
 
@@ -46,7 +43,7 @@ public class NovelEntity {
     @Column(name = "author_name", nullable = false)
     private String authorName;
 
-    @Column(name = "description")
+    @Column(name = "description", columnDefinition = "TEXT")
     private String description;
 
     @Column(name = "cover_image_id")
@@ -55,6 +52,9 @@ public class NovelEntity {
     @Column(name = "status")
     @Enumerated(EnumType.STRING)
     private NovelStatus status;
+
+    @Column(name = "total_chapters")
+    private int totalChapters;
 
     @Column(name = "total_views")
     private int totalViews;

@@ -12,6 +12,8 @@ public interface NovelDomainRepository extends DomainRepository<Novel, UUID> {
 
     Novel getByNovelName(String novelName);
 
+    int getChapterCount(String novelName);
+
     List<Novel> getAll();
 
     boolean existsByNovelName(String novelName);

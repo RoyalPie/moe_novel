@@ -33,6 +33,7 @@ public class Novel {
     private String description;
     private UUID coverImage;
     private NovelStatus status;
+    private int totalChapters;
     private int totalViews;
     private int totalFollows;
     private boolean deleted;
@@ -49,6 +50,7 @@ public class Novel {
         this.description = cmd.getDescription();
         this.coverImage = cmd.getCoverImage();
         this.status = cmd.getNovelStatus();
+        this.totalChapters = cmd.getTotalChapters();
         this.totalViews = 0;
         this.totalFollows = 0;
         this.deleted = false;

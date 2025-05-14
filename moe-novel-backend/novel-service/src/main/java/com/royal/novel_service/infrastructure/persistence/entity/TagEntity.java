@@ -27,7 +27,6 @@ import java.util.UUID;
 @Table(name = "tags")
 public class TagEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(columnDefinition = "UUID", updatable = false, nullable = false)
     private UUID tagId;
 

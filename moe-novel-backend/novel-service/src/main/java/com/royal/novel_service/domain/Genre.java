@@ -19,7 +19,7 @@ import java.util.UUID;
 @Getter
 public class Genre {
     private UUID genreId;
-    private UUID genreName;
+    private String genreName;
 
     public Genre(CreateOrUpdateGenreCmd cmd) {
         this.genreId = IdUtils.newUUID();

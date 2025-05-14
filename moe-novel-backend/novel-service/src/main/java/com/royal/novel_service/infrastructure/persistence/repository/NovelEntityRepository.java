@@ -14,9 +14,17 @@ import java.util.UUID;
 @Repository
 public interface NovelEntityRepository extends JpaRepository<NovelEntity, UUID>, NovelEntityRepositoryCustom {
     @Query("from NovelEntity e where e.deleted = false and lower(e.title) = lower(:novelName)")
-    Optional<NovelEntity> findByUsername(@Param("novelName") String novelName);
+    Optional<NovelEntity> findByNovelName(@Param("novelName") String novelName);
+
     boolean existsByTitle(String novelTitle);
 
     @Query("select title from NovelEntity e where e.deleted = false")
     List<String> getAllName();
+
+    @Query("SELECT COUNT(c) " +
+            "FROM NovelEntity n " +
+            "LEFT JOIN NovelChapterEntity nc ON n.id = nc.novelId " +
+            "LEFT JOIN ChapterEntity c ON nc.chapterId = c.id " +
+            "WHERE n.title = :novelTitle")
+    int chapterCount(@Param("novelTitle") String novelTitle);
 }

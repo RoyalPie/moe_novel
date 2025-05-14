@@ -22,6 +22,7 @@ public class CreateNovelCmd {
     private String description;
     private UUID coverImage;
     private NovelStatus novelStatus;
+    private int totalChapters;
 
     private List<CreateNovelGenreCmd> novelGenres;
     private List<CreateNovelTagCmd> novelTags;
