@@ -1,4 +1,4 @@
-package com.royal.iam_service.infrastructure.adapter.storage;
+package com.royal.novel_service.infrastructure.adapter.storage;
 
 import com.evo.common.client.storage.StorageClient;
 import com.evo.common.dto.response.FileResponse;

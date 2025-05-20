@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Repository
-public class UserDomainRepositoryImpl extends AbtractDocumentRepository<User, UserDocument, UUID>
+public class UserDomainRepositoryImpl extends AbstractDocumentRepository<User, UserDocument, UUID>
         implements UserDomainRepository {
     private final UserDocumentMapper mapper;
     private final UserDocumentRepository repository;

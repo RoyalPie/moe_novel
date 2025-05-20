@@ -6,8 +6,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
@@ -19,6 +17,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.time.Instant;
 import java.util.UUID;
 
 @Entity
@@ -61,6 +60,9 @@ public class NovelEntity {
 
     @Column(name = "total_follows")
     private int totalFollows;
+
+    @Column(name = "updated_at")
+    private Instant updatedAt;
 
     @Column(name = "deleted")
     private boolean deleted;

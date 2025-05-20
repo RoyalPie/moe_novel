@@ -1,5 +1,6 @@
 package com.royal.novel_service.application.service;
 
+import com.evo.common.dto.response.FileResponse;
 import com.evo.common.webapp.support.IdUtils;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -15,13 +16,17 @@ import com.royal.novel_service.domain.command.CreateOrUpdateGenreCmd;
 import com.royal.novel_service.domain.repository.ChapterDomainRepository;
 import com.royal.novel_service.domain.repository.GenreDomainRepository;
 import com.royal.novel_service.domain.repository.NovelDomainRepository;
+import com.royal.novel_service.infrastructure.adapter.storage.FileService;
 import com.royal.novel_service.infrastructure.support.enums.NovelStatus;
 import lombok.RequiredArgsConstructor;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+
 
 import java.io.File;
 import java.io.IOException;
@@ -41,6 +46,7 @@ public class NovelImportService {
     private final ChapterDomainRepository chapterRepository;
     private final GenreDomainRepository genreRepository;
     private final ObjectMapper objectMapper;
+    private final FileService fileService;
 
     @Transactional
     public void importNovelsFromFolder(String folderPath) {
@@ -61,7 +67,6 @@ public class NovelImportService {
         for (File novelFolder : novelFolders) {
             try {
                 String folderName = novelFolder.getName().trim().toLowerCase();
-                boolean ok = savedNovel.contains(folderName);
                 if (savedNovel.contains(folderName)) {
                     updateNovelFromFolder(novelFolder);
                 }
@@ -294,7 +299,7 @@ public class NovelImportService {
             NovelGenre novelGenre = new NovelGenre(genreCmd);
             novelGenres.add(novelGenre);
         });
-
+        FileResponse fileResponse = uploadCoverFile(novelFolder);
         Novel novel = Novel.builder()
                 .novelId(IdUtils.newUUID())
                 .title(novelFolder.getName())
@@ -304,6 +309,7 @@ public class NovelImportService {
                 .totalChapters(novelChapters.size())
                 .totalViews(0)
                 .totalFollows(0)
+                .coverImage(fileResponse.getId())
                 .deleted(false)
                 .novelGenres(novelGenres)
                 .novelChapters(novelChapters)
@@ -335,4 +341,32 @@ public class NovelImportService {
         }
         return null;
     }
+
+    private FileResponse uploadCoverFile(File novelFolder) {
+        File[] covers = novelFolder.listFiles((d, name) -> name.toLowerCase().startsWith("cover."));
+        if (covers == null || covers.length == 0) {
+            return null;
+        }
+        File cover = covers[0];
+        try {
+            byte[] bytes = Files.readAllBytes(cover.toPath());
+            String contentType = Files.probeContentType(cover.toPath());
+            MultipartFile multipart = new MockMultipartFile(
+                    "files",
+                    cover.getName(),
+                    contentType,
+                    bytes
+            );
+            // calls your existing upload API
+            List<FileResponse> responses = fileService.uploadFile(List.of(multipart));
+            if (!responses.isEmpty()) {
+                return responses.get(0);
+            }
+        } catch (IOException e) {
+            System.err.println("Failed to read cover image: " + e.getMessage());
+        }
+        return null;
+    }
+
+
 }

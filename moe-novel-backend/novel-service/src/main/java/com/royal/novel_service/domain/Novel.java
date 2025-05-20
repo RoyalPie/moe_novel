@@ -14,6 +14,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -36,6 +37,7 @@ public class Novel {
     private int totalChapters;
     private int totalViews;
     private int totalFollows;
+    private Instant updatedAt;
     private boolean deleted;
 
     private List<NovelGenre> novelGenres;
@@ -51,6 +53,7 @@ public class Novel {
         this.coverImage = cmd.getCoverImage();
         this.status = cmd.getNovelStatus();
         this.totalChapters = cmd.getTotalChapters();
+        this.updatedAt = Instant.now();
         this.totalViews = 0;
         this.totalFollows = 0;
         this.deleted = false;
@@ -138,7 +141,7 @@ public class Novel {
             if (this.novelChapters == null) {
                 this.novelChapters = new ArrayList<>();
             }
-
+            this.updatedAt = Instant.now();
             // Map existing roles by chapterId
             Map<UUID, NovelChapter> existingChaptersMap = new HashMap<>();
             for (NovelChapter chapter : this.novelChapters) {

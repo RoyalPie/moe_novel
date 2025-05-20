@@ -8,4 +8,5 @@ import java.util.UUID;
 
 @Repository
 public interface TagEntityRepository extends JpaRepository<TagEntity, UUID> {
+    TagEntity findByTagName(String tagName);
 }

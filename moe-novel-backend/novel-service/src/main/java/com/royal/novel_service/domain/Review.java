@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
+import java.time.Instant;
 import java.util.UUID;
 
 @EqualsAndHashCode(callSuper = false)
@@ -20,6 +21,7 @@ import java.util.UUID;
 public class Review {
     private UUID reviewId;
     private double rating;
+    private Instant createdAt;
     private String content;
 
     public Review(CreateOrUpdateReviewCmd cmd) {

@@ -17,7 +17,7 @@ public class UserMessageConsumeService {
     private final UserCommandService userCommandService;
     private final CommandMapper commandMapper;
 
-    @KafkaListener(topics = "sync-user")
+    @KafkaListener(topics = "sync-user", groupId = "iam-group")
     public void syncUser(SyncUserEvent syncUserEvent){
         SyncUserCmd cmd = commandMapper.from(syncUserEvent.getSyncUserRequest());
         String actionType = syncUserEvent.getSyncAction();

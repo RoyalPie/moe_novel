@@ -6,11 +6,11 @@ import org.springframework.data.elasticsearch.repository.ElasticsearchRepository
 
 import java.util.List;
 
-public abstract class AbtractDocumentRepository<D, E, ID> implements DocumentDomainRepository<D, ID> {
+public abstract class AbstractDocumentRepository<D, E, ID> implements DocumentDomainRepository<D, ID> {
     protected final ElasticsearchRepository<E, ID> repository;
     protected final DocumentMapper<D, E> mapper;
 
-    protected AbtractDocumentRepository(ElasticsearchRepository<E, ID> repository, DocumentMapper<D, E> mapper) {
+    protected AbstractDocumentRepository(ElasticsearchRepository<E, ID> repository, DocumentMapper<D, E> mapper) {
         this.repository = repository;
         this.mapper = mapper;
     }
