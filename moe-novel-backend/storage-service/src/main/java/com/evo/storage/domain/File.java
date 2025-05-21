@@ -62,7 +62,7 @@ public class File extends Auditor {
         try {
             String fileExtension = originName.substring(originName.lastIndexOf("."));
             MessageDigest messageDigest = MessageDigest.getInstance("MD5");
-            byte[] hashBytes = messageDigest.digest(fileName.getBytes(StandardCharsets.UTF_8));
+            byte[] hashBytes = messageDigest.digest((fileName + IdUtils.nextId()).getBytes(StandardCharsets.UTF_8));
             StringBuilder stringBuilder = new StringBuilder();
             for (byte b : hashBytes) {
                 stringBuilder.append(String.format("%02x", b));

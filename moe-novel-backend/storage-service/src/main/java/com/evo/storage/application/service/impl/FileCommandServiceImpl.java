@@ -57,7 +57,6 @@ public class FileCommandServiceImpl implements FileCommandService {
                         .fileSize(file.getSize())
                         .isPublic(isPublic)
                         .build();
-                System.out.println(file.getContentType());
                 File fileDomain = new File(storeFilecmd);
                 Path targetLocation = storageLocation.resolve(fileDomain.getMd5Name());
                 file.transferTo(targetLocation.toFile());

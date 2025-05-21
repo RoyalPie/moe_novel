@@ -29,7 +29,7 @@ public class ReviewEnity {
     private UUID reviewId;
 
     @Column(name = "rating", nullable = false)
-    private double rating;
+    private int rating;
 
     @Column(name = "created_at")
     private Instant createdAt;

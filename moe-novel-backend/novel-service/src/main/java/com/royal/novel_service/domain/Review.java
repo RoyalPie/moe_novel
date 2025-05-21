@@ -20,7 +20,7 @@ import java.util.UUID;
 @Getter
 public class Review {
     private UUID reviewId;
-    private double rating;
+    private int rating;
     private Instant createdAt;
     private String content;
 

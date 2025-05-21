@@ -159,7 +159,6 @@ public class Novel {
         }
     }
 
-
     public void changeCoverImage(UUID fileId){
         this.coverImage = fileId;
     }
