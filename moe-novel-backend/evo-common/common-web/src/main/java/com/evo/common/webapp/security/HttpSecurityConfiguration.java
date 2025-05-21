@@ -72,8 +72,6 @@ public class HttpSecurityConfiguration {
                 .authorizeHttpRequests(authorizeHttpRequests ->
                         authorizeHttpRequests
                                 .requestMatchers(PUBLIC_ENDPOINT).permitAll()
-                                .requestMatchers("/api/**").authenticated()
-                                .requestMatchers("/user/**").authenticated()
                                 .anyRequest().authenticated()
                 )
                 .oauth2ResourceServer(oauth2 -> oauth2

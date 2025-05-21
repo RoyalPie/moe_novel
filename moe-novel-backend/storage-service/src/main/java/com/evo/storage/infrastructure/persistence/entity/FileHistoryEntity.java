@@ -1,5 +1,6 @@
 package com.evo.storage.infrastructure.persistence.entity;
 
+import com.evo.common.entity.AuditEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -19,7 +20,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
 @Table(name = "file_histories")
-public class FileHistoryEntity {
+public class FileHistoryEntity extends AuditEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;

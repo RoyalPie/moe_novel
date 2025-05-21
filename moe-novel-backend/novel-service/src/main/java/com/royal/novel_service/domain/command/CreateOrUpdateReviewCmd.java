@@ -11,6 +11,6 @@ import java.util.UUID;
 @Builder
 public class CreateOrUpdateReviewCmd {
     private UUID reviewId;
-    private double rating;
+    private int rating;
     private String content;
 }
