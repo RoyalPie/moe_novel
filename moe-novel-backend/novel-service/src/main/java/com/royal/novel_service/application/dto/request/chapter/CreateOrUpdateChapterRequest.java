@@ -1,17 +1,18 @@
-package com.royal.novel_service.domain.command;
+package com.royal.novel_service.application.dto.request.chapter;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.UUID;
 
-@Getter
-@Setter
+@Data
 @Builder
 @AllArgsConstructor
-public class CreateOrUpdateChapterCmd {
+@NoArgsConstructor
+public class CreateOrUpdateChapterRequest {
+    private UUID novelId;
     private UUID chapterId;
     private String title;
     private int chapterNumber;

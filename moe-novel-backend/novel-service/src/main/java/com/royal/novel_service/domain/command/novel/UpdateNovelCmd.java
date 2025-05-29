@@ -1,28 +1,25 @@
-package com.royal.novel_service.application.dto.request;
+package com.royal.novel_service.domain.command.novel;
 
-import com.royal.novel_service.domain.command.CreateNovelChapterCmd;
-import com.royal.novel_service.domain.command.CreateNovelGenreCmd;
-import com.royal.novel_service.domain.command.CreateNovelTagCmd;
 import com.royal.novel_service.infrastructure.support.enums.NovelStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.List;
 import java.util.UUID;
 
-@Data
+@Getter
+@Setter
 @Builder
-@AllArgsConstructor
 @NoArgsConstructor
-public class UpdateNovelRequest {
-    private UUID novelId;
+@AllArgsConstructor
+public class UpdateNovelCmd {
     private String title;
     private String authorName;
     private String description;
     private NovelStatus status;
-    private UUID coverImage;
 
     private List<CreateNovelGenreCmd> novelGenres;
     private List<CreateNovelTagCmd> novelTags;

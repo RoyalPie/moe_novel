@@ -1,6 +1,6 @@
 package com.evo.common.enums;
 
-import com.evo.common.dto.error.ResponseError;
+import com.evo.common.error.ResponseError;
 
 public enum ServiceUnavailableError implements ResponseError {
     SERVICE_UNAVAILABLE_ERROR(50300001, "Service unavailable"),

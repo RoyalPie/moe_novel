@@ -1,7 +1,7 @@
 package com.royal.novel_service.domain;
 
 import com.evo.common.webapp.support.IdUtils;
-import com.royal.novel_service.domain.command.CreateNovelTagCmd;
+import com.royal.novel_service.domain.command.novel.CreateNovelTagCmd;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

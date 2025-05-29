@@ -2,6 +2,7 @@ package com.royal.elasticsearch.application.service;
 
 import com.evo.common.dto.event.SyncNovelEvent;
 import com.evo.common.dto.event.SyncUserEvent;
+import com.evo.common.enums.SyncActionType;
 import com.royal.elasticsearch.application.mapper.CommandMapper;
 import com.royal.elasticsearch.domain.command.SyncNovelCmd;
 import com.royal.elasticsearch.domain.command.SyncUserCmd;
@@ -22,15 +23,15 @@ public class NovelMessageConsumeService {
     @KafkaListener(topics = "sync-novel", groupId = "novel-group")
     public void syncUser(SyncNovelEvent syncNovelEvent){
         SyncNovelCmd cmd = commandMapper.from(syncNovelEvent.getSyncNovelRequest());
-        String actionType = syncNovelEvent.getSyncAction();
+        SyncActionType actionType = syncNovelEvent.getSyncAction();
         switch (actionType) {
-            case "CREATE_NOVEL":
+            case CREATED:
                 novelCommandService.create(cmd);
                 break;
-            case "UPDATE_NOVEL":
+            case UPDATED:
                 novelCommandService.update(cmd);
                 break;
-            case "DELETE_NOVEL":
+            case DELETED:
                 novelCommandService.delete(cmd.getNovelId());
                 break;
             default:

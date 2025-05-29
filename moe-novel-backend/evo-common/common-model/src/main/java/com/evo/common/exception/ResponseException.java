@@ -1,7 +1,7 @@
 package com.evo.common.exception;
 
 
-import com.evo.common.dto.error.ResponseError;
+import com.evo.common.error.ResponseError;
 
 import java.text.MessageFormat;
 import java.util.Objects;

@@ -14,7 +14,6 @@ public class SelfIDPAuthQueryService implements AuthServiceQuery {
     private final TokenProvider tokenProvider;
     private final RedisTemplate<String, String> redisTemplate;
 
-
     @Override
     public String getClientToken(String clientId, String clientSecret) {
         return null;

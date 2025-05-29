@@ -1,4 +1,4 @@
-package com.royal.novel_service.application.service;
+package com.royal.novel_service.application.service.query;
 
 import com.royal.novel_service.application.dto.response.NovelDTO;
 import org.springframework.stereotype.Service;

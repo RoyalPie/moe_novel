@@ -7,4 +7,5 @@ public interface DomainRepository<D, ID> {
     List<D> saveAll(List<D> entities);
     List<D> findAllByIds(List<ID> ids);
     D getById(ID id);
+    D delete(ID id);
 }
