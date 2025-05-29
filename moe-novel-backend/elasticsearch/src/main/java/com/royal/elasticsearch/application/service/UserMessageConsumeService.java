@@ -1,6 +1,7 @@
 package com.royal.elasticsearch.application.service;
 
 import com.evo.common.dto.event.SyncUserEvent;
+import com.evo.common.enums.SyncActionType;
 import com.royal.elasticsearch.application.mapper.CommandMapper;
 import com.royal.elasticsearch.domain.command.SyncUserCmd;
 import lombok.RequiredArgsConstructor;
@@ -20,15 +21,15 @@ public class UserMessageConsumeService {
     @KafkaListener(topics = "sync-user", groupId = "iam-group")
     public void syncUser(SyncUserEvent syncUserEvent){
         SyncUserCmd cmd = commandMapper.from(syncUserEvent.getSyncUserRequest());
-        String actionType = syncUserEvent.getSyncAction();
+        SyncActionType actionType = syncUserEvent.getSyncAction();
         switch (actionType) {
-            case "CREATE_USER":
+            case CREATED:
                 userCommandService.create(cmd);
                 break;
-            case "UPDATE_USER":
+            case UPDATED:
                 userCommandService.update(cmd);
                 break;
-            case "DELETE_USER":
+            case DELETED:
                 userCommandService.delete(cmd.getUserId());
                 break;
             default:

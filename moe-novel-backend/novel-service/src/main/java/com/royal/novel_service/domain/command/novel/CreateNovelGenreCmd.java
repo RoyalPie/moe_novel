@@ -1,4 +1,4 @@
-package com.royal.novel_service.domain.command;
+package com.royal.novel_service.domain.command.novel;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,7 +11,7 @@ import java.util.UUID;
 @Setter
 @Builder
 @AllArgsConstructor
-public class CreateNovelChapterCmd {
+public class CreateNovelGenreCmd {
     private UUID novelId;
-    private UUID chapterId;
+    private UUID genreId;
 }

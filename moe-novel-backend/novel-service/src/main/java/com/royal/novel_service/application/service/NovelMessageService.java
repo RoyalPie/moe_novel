@@ -2,12 +2,12 @@ package com.royal.novel_service.application.service;
 
 import com.evo.common.dto.event.SyncNovelEvent;
 import com.evo.common.dto.request.SyncNovelRequest;
+import com.evo.common.enums.KafkaTopic;
+import com.evo.common.enums.SyncActionType;
 import com.royal.novel_service.application.dto.mapper.SyncMapper;
 import com.royal.novel_service.domain.Genre;
 import com.royal.novel_service.domain.Novel;
 import com.royal.novel_service.domain.NovelGenre;
-import com.royal.novel_service.domain.NovelTag;
-import com.royal.novel_service.domain.Tag;
 import com.royal.novel_service.domain.repository.GenreDomainRepository;
 import com.royal.novel_service.domain.repository.NovelDomainRepository;
 import com.royal.novel_service.domain.repository.TagDomainRepository;
@@ -17,7 +17,6 @@ import org.springframework.kafka.support.SendResult;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 
 @RequiredArgsConstructor
@@ -37,10 +36,10 @@ public class NovelMessageService {
 
             SyncNovelRequest request = syncMapper.from(novel, genres, tags);
             SyncNovelEvent syncNovelEvent = SyncNovelEvent.builder()
-                    .syncAction("CREATE_NOVEL")
+                    .syncAction(SyncActionType.CREATED)
                     .syncNovelRequest(request)
                     .build();
-            CompletableFuture<SendResult<String, Object>> future = kafkaTemplate.send("sync-novel", syncNovelEvent);
+            CompletableFuture<SendResult<String, Object>> future = kafkaTemplate.send(KafkaTopic.SYNC_NOVEL.getTopicName(), syncNovelEvent);
             future.whenComplete((result, ex) -> {
                 if (ex == null) {
                     System.out.println("Sent message=[" + result +

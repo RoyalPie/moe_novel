@@ -1,8 +1,8 @@
-package com.royal.novel_service.application.service.impl.query;
+package com.royal.novel_service.application.service.query.impl;
 
 import com.royal.novel_service.application.dto.mapper.NovelDTOMapper;
 import com.royal.novel_service.application.dto.response.NovelDTO;
-import com.royal.novel_service.application.service.NovelQueryService;
+import com.royal.novel_service.application.service.query.NovelQueryService;
 import com.royal.novel_service.domain.Novel;
 import com.royal.novel_service.domain.repository.NovelDomainRepository;
 import lombok.RequiredArgsConstructor;

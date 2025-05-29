@@ -1,4 +1,4 @@
-package com.evo.common.dto.error;
+package com.evo.common.error;
 
 public interface ResponseError {
     String getName();

@@ -11,7 +11,7 @@ public abstract class AbstractDomainRepository<D, E, ID> implements DomainReposi
     protected final JpaRepository<E, ID> repository;
     protected final EntityMapper<D, E> entityMapper;
 
-    public AbstractDomainRepository(JpaRepository<E, ID> repository, EntityMapper<D, E> entityMapper) {
+    protected AbstractDomainRepository(JpaRepository<E, ID> repository, EntityMapper<D, E> entityMapper) {
         this.repository = repository;
         this.entityMapper = entityMapper;
     }
@@ -22,13 +22,18 @@ public abstract class AbstractDomainRepository<D, E, ID> implements DomainReposi
         List<D> domainModels = this.saveAll(List.of(domainModel));
         return domainModels.getFirst();
     }
-
+    @Override
+    @Transactional
+    public D delete(ID id){
+        this.repository.delete(entityMapper.toEntity(this.getById(id)));
+        return this.getById(id);
+    }
     @Override
     public List<D> findAllByIds(List<ID> ids) {
         return this.enrichList(
                 this.repository.findAllById(ids).stream()
                         .map(this.entityMapper::toDomainModel)
-                        .collect(Collectors.toList()));
+                        .toList());
     }
 
     @Override

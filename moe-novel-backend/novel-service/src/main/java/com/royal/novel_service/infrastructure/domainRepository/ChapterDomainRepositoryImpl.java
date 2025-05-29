@@ -23,9 +23,8 @@ public class ChapterDomainRepositoryImpl extends AbstractDomainRepository<Chapte
         this.entityMapper = entityMapper;
     }
 
-
     @Override
-    public List<Chapter> findByChapterNumberAndTilte(String novelTitle, int chapterNumber) {
+    public List<Chapter> findByChapterNumberAndTitle(String novelTitle, int chapterNumber) {
         List<ChapterEntity> chapterEntities = repository.findByChapterNumber(novelTitle, chapterNumber);
         return entityMapper.toDomainModelList(chapterEntities);
     }

@@ -42,6 +42,9 @@ public class NovelEntity {
     @Column(name = "author_name", nullable = false)
     private String authorName;
 
+    @Column(columnDefinition = "UUID", updatable = false)
+    private UUID authorId;
+
     @Column(name = "description", columnDefinition = "TEXT")
     private String description;
 

@@ -1,4 +1,4 @@
-package com.royal.novel_service.domain.command;
+package com.royal.novel_service.domain.command.novel;
 
 import lombok.Builder;
 import lombok.Getter;

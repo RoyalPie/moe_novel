@@ -1,7 +1,7 @@
 package com.royal.novel_service.domain;
 
 import com.evo.common.webapp.support.IdUtils;
-import com.royal.novel_service.domain.command.CreateOrUpdateChapterCmd;
+import com.royal.novel_service.domain.command.chapter.CreateOrUpdateChapterCmd;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;

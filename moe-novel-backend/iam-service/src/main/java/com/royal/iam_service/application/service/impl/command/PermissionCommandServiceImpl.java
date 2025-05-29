@@ -7,14 +7,14 @@ import com.royal.iam_service.application.mapper.CommandMapper;
 import com.royal.iam_service.application.service.PermissionCommandService;
 import com.royal.iam_service.domain.Permission;
 import com.royal.iam_service.domain.command.CreateOrUpdatePermissionCmd;
-import com.royal.iam_service.infrastructure.domainRepository.PermissionDomainRepositoryImpl;
+import com.royal.iam_service.domain.repository.PermissionDomainRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
 public class PermissionCommandServiceImpl implements PermissionCommandService {
-    private final PermissionDomainRepositoryImpl permissionDomainRepositoryImpl;
+    private final PermissionDomainRepository permissionDomainRepository;
     private final PermissionDTOMapper permissionDTOMapper;
     private final CommandMapper commandMapper;
 
@@ -22,14 +22,14 @@ public class PermissionCommandServiceImpl implements PermissionCommandService {
     public PermissionDTO createPermission(CreateOrUpdatePermissionRequest request) {
         CreateOrUpdatePermissionCmd cmd = commandMapper.from(request);
         Permission permission = new Permission(cmd);
-        return permissionDTOMapper.domainModelToDTO(permissionDomainRepositoryImpl.save(permission));
+        return permissionDTOMapper.domainModelToDTO(permissionDomainRepository.save(permission));
     }
 
     @Override
     public PermissionDTO updatePermission(CreateOrUpdatePermissionRequest request) {
         CreateOrUpdatePermissionCmd cmd = commandMapper.from(request);
-        Permission permission = permissionDomainRepositoryImpl.getById(cmd.getId());
+        Permission permission = permissionDomainRepository.getById(cmd.getId());
         permission.update(cmd);
-        return permissionDTOMapper.domainModelToDTO(permissionDomainRepositoryImpl.save(permission));
+        return permissionDTOMapper.domainModelToDTO(permissionDomainRepository.save(permission));
     }
 }

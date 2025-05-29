@@ -42,7 +42,6 @@ public class UserQueryServiceImpl implements UserQueryService {
     private final QueryMapper queryMapper;
     private final RoleDomainRepository roleDomainRepository;
 
-
     @Override
     public UserDTO getUserInfo(String username) {
         User user = userDomainRepository.getByUsername(username);

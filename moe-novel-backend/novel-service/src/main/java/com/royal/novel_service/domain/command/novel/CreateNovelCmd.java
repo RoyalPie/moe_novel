@@ -1,4 +1,4 @@
-package com.royal.novel_service.domain.command;
+package com.royal.novel_service.domain.command.novel;
 
 import com.royal.novel_service.infrastructure.support.enums.NovelStatus;
 import lombok.AllArgsConstructor;
@@ -15,12 +15,15 @@ import java.util.UUID;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UpdateNovelCmd {
+public class CreateNovelCmd {
     private UUID novelId;
     private String title;
     private String authorName;
+    private UUID authorId;
     private String description;
-    private NovelStatus status;
+    private UUID coverImage;
+    private NovelStatus novelStatus;
+    private int totalChapters;
 
     private List<CreateNovelGenreCmd> novelGenres;
     private List<CreateNovelTagCmd> novelTags;

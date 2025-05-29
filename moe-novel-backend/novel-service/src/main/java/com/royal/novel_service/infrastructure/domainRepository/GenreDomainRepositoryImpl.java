@@ -27,6 +27,7 @@ public class GenreDomainRepositoryImpl extends AbstractDomainRepository<Genre, G
     public Genre getById(UUID id){
         return null;
     }
+
     @Override
     public Genre findByName(String name) {
         return entityMapper.toDomainModel(repository.findByGenreName(name));

@@ -7,6 +7,6 @@ import java.util.List;
 import java.util.UUID;
 
 public interface ChapterDomainRepository extends DomainRepository<Chapter, UUID> {
-    List<Chapter> findByChapterNumberAndTilte(String novelTitle, int chapterNumber);
+    List<Chapter> findByChapterNumberAndTitle(String novelTitle, int chapterNumber);
 
 }

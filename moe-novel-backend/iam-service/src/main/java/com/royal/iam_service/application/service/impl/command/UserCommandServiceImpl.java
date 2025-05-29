@@ -3,6 +3,11 @@ package com.royal.iam_service.application.service.impl.command;
 import com.evo.common.dto.event.SyncUserEvent;
 import com.evo.common.dto.request.SyncUserRequest;
 import com.evo.common.dto.response.FileResponse;
+import com.evo.common.enums.KafkaTopic;
+import com.evo.common.enums.SyncActionType;
+import com.evo.common.error.AuthenticationError;
+import com.evo.common.error.InternalServerError;
+import com.evo.common.exception.ResponseException;
 import com.royal.iam_service.application.dto.mapper.UserDTOMapper;
 import com.royal.iam_service.application.dto.request.ChangePasswordRequest;
 import com.royal.iam_service.application.dto.request.CreateUserRequest;
@@ -91,13 +96,13 @@ public class UserCommandServiceImpl implements UserCommandService {
             user = userDomainRepository.save(user);
             SyncUserRequest syncUserRequest = syncMapper.from(user);
             SyncUserEvent syncUserEvent = SyncUserEvent.builder()
-                    .syncAction("CREATE_USER")
+                    .syncAction(SyncActionType.CREATED)
                     .syncUserRequest(syncUserRequest)
                     .build();
-            kafkaTemplate.send("sync-user", syncUserEvent);
+            kafkaTemplate.send(KafkaTopic.SYNC_USER.getTopicName(), syncUserEvent);
             return userDTOMapper.domainModelToDTO(user);
         } catch (FeignException e) {
-            throw new RuntimeException("Cant create user");
+            throw new ResponseException(InternalServerError.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -122,17 +127,17 @@ public class UserCommandServiceImpl implements UserCommandService {
         UUID keycloakUserId = user.getKeycloakUserId();
 
         String token = keycloakQueryClient.getClientToken();
-        if (passwordEncoder.matches(request.getOldPassword(), user.getPassword())) {
-            ResetKeycloakPasswordCmd resetKeycloakPasswordCmd = ResetKeycloakPasswordCmd.builder().value(changePasswordCmd.getNewPassword()).build();
-            keycloakCommandClient.resetPassword("Bearer " + token, keycloakUserId, resetKeycloakPasswordCmd);
-
-            user.changePassword(passwordEncoder.encode(request.getNewPassword()));
-            userDomainRepository.save(user);
-
-            emailService.sendMailAlert(user.getEmail(), "change_password");
-        } else {
-            throw new RuntimeException("Auth Error");
+        if (!passwordEncoder.matches(request.getOldPassword(), user.getPassword())){
+            throw new ResponseException(AuthenticationError.UNAUTHORISED);
         }
+        ResetKeycloakPasswordCmd resetKeycloakPasswordCmd = ResetKeycloakPasswordCmd.builder().value(changePasswordCmd.getNewPassword()).build();
+        keycloakCommandClient.resetPassword("Bearer " + token, keycloakUserId, resetKeycloakPasswordCmd);
+
+        user.changePassword(passwordEncoder.encode(request.getNewPassword()));
+        userDomainRepository.save(user);
+
+        emailService.sendMailAlert(user.getEmail(), "change_password");
+
     }
 
     @Override
@@ -156,10 +161,10 @@ public class UserCommandServiceImpl implements UserCommandService {
         userDomainRepository.save(user);
         SyncUserRequest syncUserRequest = syncMapper.from(user);
         SyncUserEvent syncUserEvent = SyncUserEvent.builder()
-                .syncAction("UPDATE_USER")
+                .syncAction(SyncActionType.UPDATED)
                 .syncUserRequest(syncUserRequest)
                 .build();
-        kafkaTemplate.send("sync-user", syncUserEvent);
+        kafkaTemplate.send(KafkaTopic.SYNC_USER.getTopicName(), syncUserEvent);
         return avatarId;
     }
 
@@ -275,7 +280,7 @@ public class UserCommandServiceImpl implements UserCommandService {
             }
             return userDTOS;
         } catch (IOException e) {
-            throw new RuntimeException("Auth Error");
+            throw new ResponseException(InternalServerError.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -286,10 +291,10 @@ public class UserCommandServiceImpl implements UserCommandService {
         user.update(cmd);
         SyncUserRequest syncUserRequest = syncMapper.from(user);
         SyncUserEvent syncUserEvent = SyncUserEvent.builder()
-                .syncAction("UPDATE_USER")
+                .syncAction(SyncActionType.DELETED)
                 .syncUserRequest(syncUserRequest)
                 .build();
-        kafkaTemplate.send("sync-user", syncUserEvent);
+        kafkaTemplate.send(KafkaTopic.SYNC_USER.getTopicName(), syncUserEvent);
         return userDTOMapper.domainModelToDTO(userDomainRepository.save(user));
     }
 
@@ -300,10 +305,10 @@ public class UserCommandServiceImpl implements UserCommandService {
         userDomainRepository.save(user);
         SyncUserRequest syncUserRequest = syncMapper.from(user);
         SyncUserEvent syncUserEvent = SyncUserEvent.builder()
-                .syncAction("UPDATE_USER")
+                .syncAction(SyncActionType.UPDATED)
                 .syncUserRequest(syncUserRequest)
                 .build();
-        kafkaTemplate.send("sync-user", syncUserEvent);
+        kafkaTemplate.send(KafkaTopic.SYNC_USER.getTopicName(), syncUserEvent);
         String token = keycloakQueryClient.getClientToken();
         keycloakIdentityClient.lockUser("Bearer " + token, user.getKeycloakUserId().toString(), LockUserCmd.builder().enabled(enabled).build());
     }

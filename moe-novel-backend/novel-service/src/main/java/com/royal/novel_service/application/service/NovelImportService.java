@@ -9,16 +9,17 @@ import com.royal.novel_service.domain.Genre;
 import com.royal.novel_service.domain.Novel;
 import com.royal.novel_service.domain.NovelChapter;
 import com.royal.novel_service.domain.NovelGenre;
-import com.royal.novel_service.domain.command.CreateNovelChapterCmd;
-import com.royal.novel_service.domain.command.CreateNovelGenreCmd;
-import com.royal.novel_service.domain.command.CreateOrUpdateChapterCmd;
 import com.royal.novel_service.domain.command.CreateOrUpdateGenreCmd;
+import com.royal.novel_service.domain.command.chapter.CreateOrUpdateChapterCmd;
+import com.royal.novel_service.domain.command.novel.CreateNovelChapterCmd;
+import com.royal.novel_service.domain.command.novel.CreateNovelGenreCmd;
 import com.royal.novel_service.domain.repository.ChapterDomainRepository;
 import com.royal.novel_service.domain.repository.GenreDomainRepository;
 import com.royal.novel_service.domain.repository.NovelDomainRepository;
 import com.royal.novel_service.infrastructure.adapter.storage.FileService;
 import com.royal.novel_service.infrastructure.support.enums.NovelStatus;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -26,7 +27,6 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-
 
 import java.io.File;
 import java.io.IOException;
@@ -37,10 +37,10 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class NovelImportService {
     private final NovelDomainRepository novelRepository;
     private final ChapterDomainRepository chapterRepository;
@@ -52,27 +52,26 @@ public class NovelImportService {
     public void importNovelsFromFolder(String folderPath) {
         File novelsDir = new File(folderPath);
         if (!novelsDir.exists() || !novelsDir.isDirectory()) {
-            System.err.println("Invalid directory: " + folderPath);
+            log.error("Invalid directory: " + folderPath);
             return;
         }
         File[] novelFolders = novelsDir.listFiles(File::isDirectory);
         if (novelFolders == null || novelFolders.length == 0) {
-            System.err.println("No novel folders found in directory: " + folderPath);
+            log.warn("No novel folders found in directory: " + folderPath);
             return;
         }
         List<String> savedNovel = novelRepository.getAllName()
                 .stream()
                 .map(n -> n.replaceAll("[<>:\"/\\\\|?*\\x00-\\x1F]", "").trim().toLowerCase())
-                .collect(Collectors.toList());
+                .toList();
         for (File novelFolder : novelFolders) {
             try {
                 String folderName = novelFolder.getName().trim().toLowerCase();
                 if (savedNovel.contains(folderName)) {
                     updateNovelFromFolder(novelFolder);
-                }
-                else importNovelFromFolder(novelFolder);
+                } else importNovelFromFolder(novelFolder);
             } catch (Exception e) {
-                System.err.println("Failed to import novel from folder " + novelFolder.getName() + ": " + e.getMessage());
+                log.error("Failed to import novel from folder " + novelFolder.getName() + ": " + e.getMessage());
                 // Continue with the next folder to avoid failing the entire import
             }
         }
@@ -85,7 +84,7 @@ public class NovelImportService {
         int oldChapters = novel.getTotalChapters();
 
         if (htmlFiles == null || htmlFiles.length == 0 || oldChapters >= htmlFiles.length) {
-            System.err.println("No HTML files found in folder: " + novelFolder.getName());
+            log.warn("No HTML files found in folder: " + novelFolder.getName());
             return;
         }
 
@@ -112,8 +111,8 @@ public class NovelImportService {
                 }
 
                 Integer chapterNumber = extractChapterNumber(htmlFile.getName());
-                if (chapterNumber == null  || chapterNumber <= oldChapters) {
-                    System.err.println("Skipping file " + htmlFile.getName() + ": Invalid chapter number");
+                if (chapterNumber == null || chapterNumber <= oldChapters) {
+                    log.info("Skipping file " + htmlFile.getName() + ": Invalid chapter number");
                     continue;
                 }
 
@@ -127,7 +126,7 @@ public class NovelImportService {
                 Chapter chapter = new Chapter(chapterCmd);
                 chapters.add(chapter);
             } catch (Exception e) {
-                System.err.println("Error processing " + htmlFile.getName() + ": " + e.getMessage());
+                log.error("Error processing " + htmlFile.getName() + ": " + e.getMessage());
             }
         }
 
@@ -166,7 +165,7 @@ public class NovelImportService {
         novel.setTotalChapters(novelChapters.size());
         try {
             novelRepository.save(novel);
-            System.out.println("Successfully updated novel: " + novel.getTitle());
+            log.info("Successfully updated novel: " + novel.getTitle());
         } catch (Exception e) {
             System.err.println("Failed to save novel " + novel.getTitle() + ": " + e.getMessage());
             throw new RuntimeException("Novel persistence failed", e);
@@ -184,7 +183,7 @@ public class NovelImportService {
                 new TypeReference<Map<String, String>>() {
                 }
         );
-        String title = meta.getOrDefault("title", novelFolder.getName());
+
         String authorName = meta.getOrDefault("creator", "Unknown");
         String subjectRaw = meta.getOrDefault("subject", "");
         String descriptionRaw = meta.getOrDefault("description", "");

@@ -25,7 +25,6 @@ public class PermissionQueryServiceImpl implements PermissionQueryService {
         SearchPermissionQuery searchPermissionQuery = queryMapper.from(searchPermissionRequest);
         List<Permission> permissions = permissionDomainRepository.search(searchPermissionQuery);
         return permissions.stream().map(permissionDTOMapper::domainModelToDTO).toList();
-
     }
 
     @Override

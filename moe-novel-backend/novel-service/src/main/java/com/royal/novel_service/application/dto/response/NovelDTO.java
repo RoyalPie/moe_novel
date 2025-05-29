@@ -16,6 +16,7 @@ public class NovelDTO {
     private UUID novelId;
     private String title;
     private String authorName;
+    private UUID authorId;
     private String description;
     private UUID coverImage;
     private NovelStatus status;

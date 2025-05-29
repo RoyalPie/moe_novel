@@ -1,11 +1,11 @@
 package com.royal.novel_service.domain;
 
 import com.evo.common.webapp.support.IdUtils;
-import com.royal.novel_service.domain.command.CreateNovelChapterCmd;
-import com.royal.novel_service.domain.command.CreateNovelCmd;
-import com.royal.novel_service.domain.command.CreateNovelGenreCmd;
-import com.royal.novel_service.domain.command.CreateNovelTagCmd;
-import com.royal.novel_service.domain.command.UpdateNovelCmd;
+import com.royal.novel_service.domain.command.novel.CreateNovelChapterCmd;
+import com.royal.novel_service.domain.command.novel.CreateNovelCmd;
+import com.royal.novel_service.domain.command.novel.CreateNovelGenreCmd;
+import com.royal.novel_service.domain.command.novel.CreateNovelTagCmd;
+import com.royal.novel_service.domain.command.novel.UpdateNovelCmd;
 import com.royal.novel_service.infrastructure.support.enums.NovelStatus;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -31,6 +31,7 @@ public class Novel {
     private UUID novelId;
     private String title;
     private String authorName;
+    private UUID authorId;
     private String description;
     private UUID coverImage;
     private NovelStatus status;
@@ -74,6 +75,7 @@ public class Novel {
                 novelTags.add(new NovelTag(createNovelTagcmd));
             });
         }
+
         if (cmd.getNovelChapters() != null) {
             cmd.getNovelChapters().forEach(createNovelChaptercmd -> {
                 createNovelChaptercmd.setNovelId(this.novelId);
@@ -156,6 +158,7 @@ public class Novel {
                     this.novelChapters.add(new NovelChapter(novelChapterCmd));
                 }
             }
+            this.totalChapters = novelChapters.size();
         }
     }
 

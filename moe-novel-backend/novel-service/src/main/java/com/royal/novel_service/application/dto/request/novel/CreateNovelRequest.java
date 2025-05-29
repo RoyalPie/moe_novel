@@ -1,4 +1,4 @@
-package com.royal.novel_service.application.dto.request;
+package com.royal.novel_service.application.dto.request.novel;
 
 import com.royal.novel_service.domain.NovelGenre;
 import com.royal.novel_service.domain.NovelTag;
@@ -16,6 +16,7 @@ import java.util.UUID;
 @NoArgsConstructor
 public class CreateNovelRequest {
     private String title;
+    private UUID authorId;
     private String authorName;
     private String description;
     private UUID coverImage;
