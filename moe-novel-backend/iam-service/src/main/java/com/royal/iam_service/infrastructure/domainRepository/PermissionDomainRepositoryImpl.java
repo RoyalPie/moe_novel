@@ -10,6 +10,7 @@ import com.royal.iam_service.infrastructure.persistence.repository.PermissionEnt
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Repository
@@ -39,6 +40,11 @@ public class PermissionDomainRepositoryImpl extends AbstractDomainRepository<Per
     @Override
     public Long count(SearchPermissionQuery searchPermissionQuery) {
         return repository.count(searchPermissionQuery);
+    }
+
+    @Override
+    public Optional<Permission> findById(UUID uuid) {
+        return Optional.empty();
     }
 
     @Override

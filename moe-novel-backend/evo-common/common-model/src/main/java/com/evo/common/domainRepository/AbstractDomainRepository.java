@@ -5,7 +5,6 @@ import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 public abstract class AbstractDomainRepository<D, E, ID> implements DomainRepository<D, ID> {
     protected final JpaRepository<E, ID> repository;
@@ -22,12 +21,14 @@ public abstract class AbstractDomainRepository<D, E, ID> implements DomainReposi
         List<D> domainModels = this.saveAll(List.of(domainModel));
         return domainModels.getFirst();
     }
+
     @Override
     @Transactional
-    public D delete(ID id){
+    public D delete(ID id) {
         this.repository.delete(entityMapper.toEntity(this.getById(id)));
         return this.getById(id);
     }
+
     @Override
     public List<D> findAllByIds(List<ID> ids) {
         return this.enrichList(
@@ -40,7 +41,7 @@ public abstract class AbstractDomainRepository<D, E, ID> implements DomainReposi
     @Transactional
     public List<D> saveAll(List<D> domains) {
         List<E> entities = this.entityMapper.toEntityList(domains);
-        entities =this.repository.saveAll(entities);
+        entities = this.repository.saveAll(entities);
         return this.entityMapper.toDomainModelList(entities);
     }
 

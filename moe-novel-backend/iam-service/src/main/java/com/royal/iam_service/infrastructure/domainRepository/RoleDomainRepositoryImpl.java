@@ -54,6 +54,11 @@ public class RoleDomainRepositoryImpl extends AbstractDomainRepository<Role, Rol
     }
 
     @Override
+    public Optional<Role> findById(UUID uuid) {
+        return Optional.empty();
+    }
+
+    @Override
     @Transactional
     public Role save(Role domainModel) {
         RoleEntity roleEntity = roleEntityMapper.toEntity(domainModel);

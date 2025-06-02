@@ -21,6 +21,7 @@ import org.springframework.stereotype.Repository;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -47,6 +48,11 @@ public class NovelDomainRepositoryImpl extends AbstractDomainRepository<Novel, N
         this.novelChapterEntityMapper = novelChapterEntityMapper;
         this.novelGenreEntityRepository = novelGenreEntityRepository;
         this.novelGenreEntityMapper = novelGenreEntityMapper;
+    }
+
+    @Override
+    public Optional<Novel> findById(UUID uuid) {
+        return Optional.empty();
     }
 
     @Override
@@ -96,8 +102,8 @@ public class NovelDomainRepositoryImpl extends AbstractDomainRepository<Novel, N
     }
 
     @Override
-    public boolean existsByNovelName(String novelName){
-        return novelEntityRepository.existsByTitle(novelName);
+    public boolean existsByNovelNameAndAuthorName(String novelName, String authorName){
+        return novelEntityRepository.existsByTitleAndAuthorName(novelName, authorName);
     }
 
     @Override

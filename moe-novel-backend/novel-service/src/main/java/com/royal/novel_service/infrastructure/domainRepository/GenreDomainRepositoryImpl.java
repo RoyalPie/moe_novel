@@ -10,6 +10,7 @@ import com.royal.novel_service.infrastructure.persistence.repository.GenreEntity
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Repository
@@ -23,8 +24,15 @@ public class GenreDomainRepositoryImpl extends AbstractDomainRepository<Genre, G
         this.entityMapper = entityMapper;
         this.repository = repository;
     }
+
     @Override
-    public Genre getById(UUID id){
+    public Optional<Genre> findById(UUID id) {
+        return this.repository.findById(id)
+                .map(this.entityMapper::toDomainModel);
+    }
+
+    @Override
+    public Genre getById(UUID id) {
         return null;
     }
 
@@ -34,12 +42,17 @@ public class GenreDomainRepositoryImpl extends AbstractDomainRepository<Genre, G
     }
 
     @Override
-    public List<Genre> search(SearchGenreQuery searchGenreQuery){
+    public List<Genre> search(SearchGenreQuery searchGenreQuery) {
         return null;
     }
 
     @Override
-    public Long count(SearchGenreQuery searchGenreQuery){
+    public Boolean exitsByName(String genreName) {
+        return repository.existsByGenreNameAndDeletedFalse(genreName);
+    }
+
+    @Override
+    public Long count(SearchGenreQuery searchGenreQuery) {
         return null;
     }
 }

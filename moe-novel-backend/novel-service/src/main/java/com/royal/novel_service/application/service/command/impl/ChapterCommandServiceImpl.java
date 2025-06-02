@@ -27,7 +27,7 @@ public class ChapterCommandServiceImpl implements ChapterCommandService {
     private final ChapterDomainRepository chapterDomainRepository;
     private final NovelDomainRepository novelDomainRepository;
     @Override
-    public ChapterDTO createChapter(CreateOrUpdateChapterRequest request) {
+    public void create(CreateOrUpdateChapterRequest request) {
         CreateOrUpdateChapterCmd createChapterCmd = commandMapper.from(request);
         Novel novel = novelDomainRepository.getById(request.getNovelId());
         Chapter newChapter = new Chapter(createChapterCmd);
@@ -38,19 +38,19 @@ public class ChapterCommandServiceImpl implements ChapterCommandService {
         updateNovelCmd.setNovelChapters(cmds);
         novel.update(updateNovelCmd);
         novelDomainRepository.save(novel);
-        return chapterDTOMapper.domainModelToDTO(newChapter);
+
     }
 
     @Override
-    public ChapterDTO updateChapter(CreateOrUpdateChapterRequest request) {
+    public void update(CreateOrUpdateChapterRequest request) {
         CreateOrUpdateChapterCmd updateChapterCmd = commandMapper.from(request);
         Chapter chapter = chapterDomainRepository.getById(updateChapterCmd.getChapterId());
         chapter.update(updateChapterCmd);
-        return chapterDTOMapper.domainModelToDTO(chapterDomainRepository.save(chapter));
+        chapterDomainRepository.save(chapter);
     }
 
     @Override
-    public void deleteChapter(UUID chapterId) {
+    public void delete(UUID chapterId) {
         chapterDomainRepository.delete(chapterId);
     }
 }

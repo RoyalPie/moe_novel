@@ -1,11 +1,10 @@
 package com.royal.novel_service.application.service.command.impl;
 
 import com.evo.common.dto.event.SyncNovelEvent;
-import com.evo.common.dto.event.SyncUserEvent;
 import com.evo.common.dto.request.SyncNovelRequest;
-import com.evo.common.dto.request.SyncUserRequest;
 import com.evo.common.enums.KafkaTopic;
 import com.evo.common.enums.SyncActionType;
+import com.evo.common.exception.ResponseException;
 import com.royal.novel_service.application.dto.mapper.NovelDTOMapper;
 import com.royal.novel_service.application.dto.mapper.SyncMapper;
 import com.royal.novel_service.application.dto.request.novel.CreateNovelRequest;
@@ -23,9 +22,11 @@ import com.royal.novel_service.domain.command.novel.UpdateNovelCmd;
 import com.royal.novel_service.domain.repository.GenreDomainRepository;
 import com.royal.novel_service.domain.repository.NovelDomainRepository;
 import com.royal.novel_service.domain.repository.TagDomainRepository;
+import com.royal.novel_service.infrastructure.support.exceptions.BadRequestError;
 import lombok.RequiredArgsConstructor;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
@@ -42,7 +43,12 @@ public class NovelCommandServiceImpl implements NovelCommandService {
     private final NovelDTOMapper novelDTOMapper;
 
     @Override
-    public NovelDTO createNovel(CreateNovelRequest request) {
+    @Transactional
+    public NovelDTO create(CreateNovelRequest request) {
+        if (this.novelDomainRepository.existsByNovelNameAndAuthorName(request.getTitle(), request.getAuthorName())) {
+            throw new ResponseException(BadRequestError.NOVEL_EXITS);
+        }
+
         CreateNovelCmd cmd = commandMapper.from(request);
         Novel novel = new Novel(cmd);
         novelDomainRepository.save(novel);
@@ -56,7 +62,11 @@ public class NovelCommandServiceImpl implements NovelCommandService {
     }
 
     @Override
-    public NovelDTO updateNovel(UpdateNovelRequest request, UUID novelId){
+    @Transactional
+    public NovelDTO update(UpdateNovelRequest request, UUID novelId) {
+        if (this.novelDomainRepository.existsByNovelNameAndAuthorName(request.getTitle(), request.getAuthorName())) {
+            throw new ResponseException(BadRequestError.NOVEL_EXITS);
+        }
         UpdateNovelCmd cmd = commandMapper.from(request);
         Novel novel = novelDomainRepository.getById(novelId);
         novel.update(cmd);
@@ -72,7 +82,11 @@ public class NovelCommandServiceImpl implements NovelCommandService {
     }
 
     @Override
-    public NovelDTO deleteNovel(UUID novelId) {
+    @Transactional
+    public NovelDTO delete(UUID novelId) {
+        if (this.novelDomainRepository.findById(novelId).isEmpty()) {
+            throw new ResponseException(BadRequestError.NOVEL_NOT_FOUND);
+        }
         Novel novel = novelDomainRepository.getById(novelId);
         novel.setDeleted(true);
         SyncNovelRequest syncNovelRequest = syncMapper.from(novel, null, null);

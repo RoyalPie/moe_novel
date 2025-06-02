@@ -3,8 +3,6 @@ package com.royal.novel_service.infrastructure.persistence.entity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
@@ -33,4 +31,7 @@ public class GenreEntity {
     @NotBlank
     @Column(name = "genre_name", nullable = false)
     private String genreName;
+
+    @Column(name = "deleted")
+    private boolean deleted;
 }

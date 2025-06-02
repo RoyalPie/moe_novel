@@ -7,8 +7,8 @@ import com.royal.novel_service.application.dto.response.NovelDTO;
 import java.util.UUID;
 
 public interface NovelCommandService {
-    NovelDTO createNovel(CreateNovelRequest request);
-    NovelDTO updateNovel(UpdateNovelRequest request, UUID novelId);
-    NovelDTO deleteNovel(UUID novelId);
+    NovelDTO create(CreateNovelRequest request);
+    NovelDTO update(UpdateNovelRequest request, UUID novelId);
+    NovelDTO delete(UUID novelId);
 
 }

@@ -16,7 +16,7 @@ public interface NovelEntityRepository extends JpaRepository<NovelEntity, UUID>,
     @Query("from NovelEntity e where e.deleted = false and lower(e.title) = lower(:novelName)")
     Optional<NovelEntity> findByNovelName(@Param("novelName") String novelName);
 
-    boolean existsByTitle(String novelTitle);
+    boolean existsByTitleAndAuthorName(String novelTitle, String authorName);
 
     @Query("select title from NovelEntity e where e.deleted = false")
     List<String> getAllName();

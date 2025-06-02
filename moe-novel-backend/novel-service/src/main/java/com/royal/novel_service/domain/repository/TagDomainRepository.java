@@ -13,4 +13,6 @@ public interface TagDomainRepository extends DomainRepository<Tag, UUID> {
     List<Tag> search(SearchTagQuery searchTagQuery);
 
     Long count(SearchTagQuery searchTagQuery);
+
+    Boolean exitsByName(String name);
 }
