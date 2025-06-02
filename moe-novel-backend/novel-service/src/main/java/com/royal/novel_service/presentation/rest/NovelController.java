@@ -8,11 +8,11 @@ import com.royal.novel_service.application.service.command.NovelCommandService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.UUID;
@@ -23,9 +23,9 @@ import java.util.UUID;
 public class NovelController {
     private final NovelCommandService novelCommandService;
 
-    @GetMapping("/novel/create")
+    @PostMapping("/novel/create")
     public ApiResponses<NovelDTO> createNovel(@RequestBody CreateNovelRequest request) {
-        NovelDTO novelDTO = novelCommandService.createNovel(request);
+        NovelDTO novelDTO = novelCommandService.create(request);
         return ApiResponses.<NovelDTO>builder()
                 .data(novelDTO)
                 .success(true)
@@ -35,10 +35,11 @@ public class NovelController {
                 .status("OK")
                 .build();
     }
-    @PatchMapping("/novel/${novelId}")
+
+    @PutMapping("/novel/{id}")
     public ApiResponses<NovelDTO> updateNovel(@RequestBody UpdateNovelRequest request,
-                                              @RequestParam UUID novelId) {
-        NovelDTO novelDTO = novelCommandService.updateNovel(request, novelId);
+                                              @PathVariable(name = "id") UUID novelId) {
+        NovelDTO novelDTO = novelCommandService.update(request, novelId);
         return ApiResponses.<NovelDTO>builder()
                 .data(novelDTO)
                 .success(true)
@@ -48,9 +49,10 @@ public class NovelController {
                 .status("OK")
                 .build();
     }
-    @DeleteMapping("novel/${novelId}")
-    public ApiResponses<NovelDTO> moveToTrashBin(@PathVariable UUID novelId){
-        NovelDTO novelDTO = novelCommandService.deleteNovel(novelId);
+
+    @DeleteMapping("novel/{id}")
+    public ApiResponses<NovelDTO> moveToTrashBin(@PathVariable(name = "id") UUID novelId) {
+        NovelDTO novelDTO = novelCommandService.delete(novelId);
         return ApiResponses.<NovelDTO>builder()
                 .data(novelDTO)
                 .success(true)

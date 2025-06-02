@@ -32,4 +32,7 @@ public class NovelTagEntity {
 
     @Column(name = "tag_id")
     private UUID tagId;
+
+    @Column(name = "deleted")
+    private boolean deleted;
 }

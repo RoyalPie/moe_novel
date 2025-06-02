@@ -20,6 +20,7 @@ import org.springframework.stereotype.Repository;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -52,6 +53,11 @@ public class UserDomainRepositoryImpl extends AbstractDomainRepository<User, Use
     public List<User> search(SearchUserQuery query) {
         List<UserEntity> userEntities = userEntityRepository.search(query);
         return this.enrichList(userEntityMapper.toDomainModelList(userEntities));
+    }
+
+    @Override
+    public Optional<User> findById(UUID uuid) {
+        return Optional.empty();
     }
 
     @Override

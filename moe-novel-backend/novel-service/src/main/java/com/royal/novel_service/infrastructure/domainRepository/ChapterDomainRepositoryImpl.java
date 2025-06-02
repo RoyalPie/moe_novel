@@ -9,6 +9,7 @@ import com.royal.novel_service.infrastructure.persistence.repository.ChapterEnti
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Repository
@@ -27,6 +28,11 @@ public class ChapterDomainRepositoryImpl extends AbstractDomainRepository<Chapte
     public List<Chapter> findByChapterNumberAndTitle(String novelTitle, int chapterNumber) {
         List<ChapterEntity> chapterEntities = repository.findByChapterNumber(novelTitle, chapterNumber);
         return entityMapper.toDomainModelList(chapterEntities);
+    }
+
+    @Override
+    public Optional<Chapter> findById(UUID uuid) {
+        return Optional.empty();
     }
 
     @Override

@@ -7,6 +7,7 @@ import com.royal.novel_service.infrastructure.persistence.entity.ReviewEnity;
 import com.royal.novel_service.infrastructure.persistence.mapper.ReviewEntityMapper;
 import com.royal.novel_service.infrastructure.persistence.repository.ReviewEntityRepository;
 
+import java.util.Optional;
 import java.util.UUID;
 
 public class ReviewDomainRepositoryImpl extends AbstractDomainRepository<Review, ReviewEnity, UUID>
@@ -23,6 +24,11 @@ public class ReviewDomainRepositoryImpl extends AbstractDomainRepository<Review,
     @Override
     public Review findByName(String name) {
         return null;
+    }
+
+    @Override
+    public Optional<Review> findById(UUID uuid) {
+        return Optional.empty();
     }
 
     @Override

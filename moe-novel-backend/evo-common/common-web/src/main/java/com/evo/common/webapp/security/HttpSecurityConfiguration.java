@@ -51,7 +51,6 @@ public class HttpSecurityConfiguration {
             "/swagger-resources/**",
             "/swagger-doc/**",
             "/swagger-resources/**",
-
     };
 
     public HttpSecurityConfiguration(ActionLogFilter actionLogFilter,
@@ -72,7 +71,8 @@ public class HttpSecurityConfiguration {
                 .authorizeHttpRequests(authorizeHttpRequests ->
                         authorizeHttpRequests
                                 .requestMatchers(PUBLIC_ENDPOINT).permitAll()
-                                .anyRequest().authenticated()
+//                                .anyRequest().authenticated()
+                                .anyRequest().permitAll()
                 )
                 .oauth2ResourceServer(oauth2 -> oauth2
                         .authenticationManagerResolver(this.jwkResolver(this.jwtProperties)));

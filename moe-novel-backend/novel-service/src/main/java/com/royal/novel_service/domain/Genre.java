@@ -20,13 +20,19 @@ import java.util.UUID;
 public class Genre {
     private UUID genreId;
     private String genreName;
+    private boolean deleted;
 
     public Genre(CreateOrUpdateGenreCmd cmd) {
         this.genreId = IdUtils.newUUID();
         this.genreName = cmd.getGenreName();
+        this.deleted = false;
     }
 
     public void update(CreateOrUpdateGenreCmd cmd) {
         this.genreName = cmd.getGenreName();
+    }
+
+    public void delete() {
+        this.deleted = true;
     }
 }

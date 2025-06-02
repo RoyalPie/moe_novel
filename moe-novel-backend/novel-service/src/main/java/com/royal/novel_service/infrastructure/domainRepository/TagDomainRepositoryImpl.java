@@ -10,6 +10,7 @@ import com.royal.novel_service.infrastructure.persistence.repository.TagEntityRe
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Repository
@@ -38,6 +39,17 @@ public class TagDomainRepositoryImpl extends AbstractDomainRepository<Tag, TagEn
     @Override
     public Long count(SearchTagQuery searchTagQuery) {
         return 0L;
+    }
+
+    @Override
+    public Boolean exitsByName(String name) {
+        return tagEntityRepository.existsByTagNameAndDeletedFalse(name);
+    }
+
+    @Override
+    public Optional<Tag> findById(UUID uuid) {
+        return tagEntityRepository.findById(uuid)
+                .map(this.tagEntityMapper::toDomainModel);
     }
 
     @Override

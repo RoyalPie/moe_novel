@@ -20,10 +20,12 @@ import java.util.UUID;
 public class Tag {
     private UUID tagId;
     private String tagName;
+    private boolean deleted;
 
     public Tag(CreateOrUpdateTagCmd cmd) {
         this.tagId = IdUtils.newUUID();
         this.tagName = cmd.getTagName();
+        this.deleted = false;
     }
 
     public void update(CreateOrUpdateTagCmd cmd) {

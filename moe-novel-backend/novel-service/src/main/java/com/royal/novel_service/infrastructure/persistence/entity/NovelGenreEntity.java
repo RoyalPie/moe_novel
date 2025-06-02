@@ -33,4 +33,6 @@ public class NovelGenreEntity {
     @Column(name = "genre_id")
     private UUID genreId;
 
+    @Column(name = "deleted")
+    private boolean deleted;
 }

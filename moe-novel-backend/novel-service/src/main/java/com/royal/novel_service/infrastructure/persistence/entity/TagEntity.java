@@ -33,4 +33,7 @@ public class TagEntity {
     @NotBlank
     @Column(name = "tag_name", nullable = false)
     private String tagName;
+
+    @Column(name = "deleted")
+    private boolean deleted;
 }

@@ -14,6 +14,7 @@ import com.evo.storage.infrastructure.persistence.repository.FileHistoryEntityRe
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Repository
@@ -44,6 +45,11 @@ public class FileDomainRepositoryImpl extends AbstractDomainRepository<File, Fil
     @Override
     public Long count(SearchFileQuery searchFileQuery) {
         return fileEntityRepository.count(searchFileQuery);
+    }
+
+    @Override
+    public Optional<File> findById(UUID uuid) {
+        return Optional.empty();
     }
 
     @Override
