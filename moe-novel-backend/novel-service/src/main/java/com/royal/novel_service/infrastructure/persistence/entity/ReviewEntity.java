@@ -23,7 +23,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
 @Table(name = "reviews")
-public class ReviewEnity {
+public class ReviewEntity {
     @Id
     @Column(columnDefinition = "UUID", updatable = false, nullable = false)
     private UUID reviewId;
@@ -39,4 +39,7 @@ public class ReviewEnity {
 
     @Column(name = "content")
     private String content;
+
+    @Column(name = "deleted")
+    private boolean deleted;
 }

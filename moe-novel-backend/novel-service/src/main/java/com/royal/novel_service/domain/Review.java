@@ -23,15 +23,19 @@ public class Review {
     private int rating;
     private Instant createdAt;
     private String content;
+    private boolean deleted;
 
     public Review(CreateOrUpdateReviewCmd cmd) {
         this.reviewId = IdUtils.newUUID();
         this.rating = cmd.getRating();
         this.content = cmd.getContent();
+        this.deleted = false;
     }
 
     public void update(CreateOrUpdateReviewCmd cmd) {
         this.rating = cmd.getRating();
         this.content = cmd.getContent();
     }
+
+    public void delete(){this.deleted = true;}
 }

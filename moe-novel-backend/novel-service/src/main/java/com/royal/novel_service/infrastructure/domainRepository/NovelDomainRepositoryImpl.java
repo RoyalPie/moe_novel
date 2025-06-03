@@ -4,7 +4,7 @@ import com.evo.common.domainRepository.AbstractDomainRepository;
 import com.royal.novel_service.domain.Novel;
 import com.royal.novel_service.domain.NovelChapter;
 import com.royal.novel_service.domain.NovelGenre;
-import com.royal.novel_service.domain.query.SearchNovelQuery;
+import com.royal.novel_service.domain.query.NovelSearchQuery;
 import com.royal.novel_service.domain.repository.NovelDomainRepository;
 import com.royal.novel_service.infrastructure.persistence.entity.NovelChapterEntity;
 import com.royal.novel_service.infrastructure.persistence.entity.NovelEntity;
@@ -80,39 +80,40 @@ public class NovelDomainRepositoryImpl extends AbstractDomainRepository<Novel, N
     }
 
     @Override
-    public int getChapterCount(String novelName){
+    public int getChapterCount(String novelName) {
         return novelEntityRepository.chapterCount(novelName);
     }
+
     @Override
-    public List<Novel> search(SearchNovelQuery searchNovelQuery){
-        List<NovelEntity> novelEntities = novelEntityRepository.search(searchNovelQuery);
+    public List<Novel> search(NovelSearchQuery novelSearchQuery) {
+        List<NovelEntity> novelEntities = novelEntityRepository.search(novelSearchQuery);
         return this.enrichList(novelEntityMapper.toDomainModelList(novelEntities));
     }
 
     @Override
-    public Novel getByNovelName(String novelName){
+    public Novel getByNovelName(String novelName) {
         NovelEntity novelEntity = novelEntityRepository.findByNovelName(novelName).orElseThrow(() -> new RuntimeException("Novel not found"));
         return this.enrich(novelEntityMapper.toDomainModel(novelEntity));
     }
 
     @Override
-    public List<Novel> getAll(){
+    public List<Novel> getAll() {
         List<NovelEntity> novels = novelEntityRepository.findAll();
         return this.enrichList(novelEntityMapper.toDomainModelList(novels));
     }
 
     @Override
-    public boolean existsByNovelNameAndAuthorName(String novelName, String authorName){
+    public boolean existsByNovelNameAndAuthorName(String novelName, String authorName) {
         return novelEntityRepository.existsByTitleAndAuthorName(novelName, authorName);
     }
 
     @Override
-    public Long count(SearchNovelQuery searchNovelQuery){
-        return novelEntityRepository.count(searchNovelQuery);
+    public Long count(NovelSearchQuery novelSearchQuery) {
+        return novelEntityRepository.count(novelSearchQuery);
     }
 
     @Override
-    public List<String> getAllName(){
+    public List<String> getAllName() {
         return novelEntityRepository.getAllName();
     }
 

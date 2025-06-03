@@ -9,6 +9,7 @@ import com.royal.novel_service.infrastructure.persistence.mapper.GenreEntityMapp
 import com.royal.novel_service.infrastructure.persistence.repository.GenreEntityRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -16,19 +17,19 @@ import java.util.UUID;
 @Repository
 public class GenreDomainRepositoryImpl extends AbstractDomainRepository<Genre, GenreEntity, UUID>
         implements GenreDomainRepository {
-    private final GenreEntityMapper entityMapper;
-    private final GenreEntityRepository repository;
+    private final GenreEntityMapper genreEntityMapper;
+    private final GenreEntityRepository genreEntityRepository;
 
     public GenreDomainRepositoryImpl(GenreEntityMapper entityMapper, GenreEntityRepository repository) {
         super(repository, entityMapper);
-        this.entityMapper = entityMapper;
-        this.repository = repository;
+        this.genreEntityMapper = entityMapper;
+        this.genreEntityRepository = repository;
     }
 
     @Override
     public Optional<Genre> findById(UUID id) {
-        return this.repository.findById(id)
-                .map(this.entityMapper::toDomainModel);
+        return this.genreEntityRepository.findById(id)
+                .map(this.genreEntityMapper::toDomainModel);
     }
 
     @Override
@@ -38,17 +39,22 @@ public class GenreDomainRepositoryImpl extends AbstractDomainRepository<Genre, G
 
     @Override
     public Genre findByName(String name) {
-        return entityMapper.toDomainModel(repository.findByGenreName(name));
+        return genreEntityMapper.toDomainModel(genreEntityRepository.findByGenreName(name));
     }
 
     @Override
     public List<Genre> search(SearchGenreQuery searchGenreQuery) {
-        return null;
+        return Collections.emptyList();
+    }
+
+    @Override
+    public List<Genre> getAll() {
+        return genreEntityRepository.findAll().stream().map(genreEntityMapper::toDomainModel).toList();
     }
 
     @Override
     public Boolean exitsByName(String genreName) {
-        return repository.existsByGenreNameAndDeletedFalse(genreName);
+        return genreEntityRepository.existsByGenreNameAndDeletedFalse(genreName);
     }
 
     @Override

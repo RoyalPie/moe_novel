@@ -1,10 +1,14 @@
 package com.royal.novel_service.presentation.rest;
 
+import com.evo.common.dto.PageDTO;
 import com.evo.common.dto.response.ApiResponses;
+import com.evo.common.dto.response.PagingResponse;
 import com.royal.novel_service.application.dto.request.novel.CreateNovelRequest;
+import com.royal.novel_service.application.dto.request.novel.NovelSearchRequest;
 import com.royal.novel_service.application.dto.request.novel.UpdateNovelRequest;
 import com.royal.novel_service.application.dto.response.NovelDTO;
 import com.royal.novel_service.application.service.command.NovelCommandService;
+import com.royal.novel_service.application.service.query.NovelQueryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,6 +26,7 @@ import java.util.UUID;
 @RequestMapping("/api")
 public class NovelController {
     private final NovelCommandService novelCommandService;
+    private final NovelQueryService novelQueryService;
 
     @PostMapping("/novel/create")
     public ApiResponses<NovelDTO> createNovel(@RequestBody CreateNovelRequest request) {
@@ -61,5 +66,11 @@ public class NovelController {
                 .timestamp(System.currentTimeMillis())
                 .status("OK")
                 .build();
+    }
+
+    @GetMapping("/novel")
+    public PagingResponse<NovelDTO> search(@RequestBody NovelSearchRequest request){
+        PageDTO<NovelDTO> novelPageDTO = novelQueryService.search(request);
+        return PagingResponse.of(novelPageDTO);
     }
 }
