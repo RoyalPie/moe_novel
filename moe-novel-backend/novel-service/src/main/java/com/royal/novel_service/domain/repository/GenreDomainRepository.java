@@ -12,6 +12,8 @@ public interface GenreDomainRepository extends DomainRepository<Genre, UUID> {
 
     List<Genre> search(SearchGenreQuery searchGenreQuery);
 
+    List<Genre> getAll();
+
     Boolean exitsByName(String genreName);
 
     Long count(SearchGenreQuery searchGenreQuery);

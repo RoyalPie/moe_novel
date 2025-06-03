@@ -30,12 +30,12 @@ public class TagCommandServiceImpl implements TagCommandService {
     }
 
     @Override
-    public void update(CreateOrUpdateTagRequest request) {
+    public void update(UUID tagId, CreateOrUpdateTagRequest request) {
         if (this.tagDomainRepository.exitsByName(request.getTagName())) {
             throw new ResponseException(BadRequestError.TAG_EXITS);
         }
         CreateOrUpdateTagCmd cmd = commandMapper.from(request);
-        Tag tag = tagDomainRepository.getById(request.getTagId());
+        Tag tag = tagDomainRepository.getById(tagId);
         tag.update(cmd);
         tagDomainRepository.save(tag);
     }

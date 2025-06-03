@@ -15,19 +15,19 @@ import java.util.UUID;
 @Repository
 public class ChapterDomainRepositoryImpl extends AbstractDomainRepository<Chapter, ChapterEntity, UUID>
         implements ChapterDomainRepository {
-    private final ChapterEntityMapper entityMapper;
-    private final ChapterEntityRepository repository;
+    private final ChapterEntityMapper chapterEntityMapper;
+    private final ChapterEntityRepository chapterEntityRepository;
 
     public ChapterDomainRepositoryImpl(ChapterEntityRepository repository, ChapterEntityMapper entityMapper) {
         super(repository, entityMapper);
-        this.repository = repository;
-        this.entityMapper = entityMapper;
+        this.chapterEntityRepository = repository;
+        this.chapterEntityMapper = entityMapper;
     }
 
     @Override
     public List<Chapter> findByChapterNumberAndTitle(String novelTitle, int chapterNumber) {
-        List<ChapterEntity> chapterEntities = repository.findByChapterNumber(novelTitle, chapterNumber);
-        return entityMapper.toDomainModelList(chapterEntities);
+        List<ChapterEntity> chapterEntities = chapterEntityRepository.findByChapterNumber(novelTitle, chapterNumber);
+        return chapterEntityMapper.toDomainModelList(chapterEntities);
     }
 
     @Override
@@ -37,6 +37,6 @@ public class ChapterDomainRepositoryImpl extends AbstractDomainRepository<Chapte
 
     @Override
     public Chapter getById(UUID uuid) {
-        return entityMapper.toDomainModel(repository.findById(uuid).orElseThrow(() -> new RuntimeException("Chapter not found")));
+        return chapterEntityMapper.toDomainModel(chapterEntityRepository.findById(uuid).orElseThrow(() -> new RuntimeException("Chapter not found")));
     }
 }

@@ -37,6 +37,12 @@ public class TagDomainRepositoryImpl extends AbstractDomainRepository<Tag, TagEn
     }
 
     @Override
+    public List<Tag> getAll() {
+        return tagEntityRepository.findAllDeletedFalse().stream()
+                .map(this.tagEntityMapper::toDomainModel).toList();
+    }
+
+    @Override
     public Long count(SearchTagQuery searchTagQuery) {
         return 0L;
     }

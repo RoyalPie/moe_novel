@@ -1,11 +1,11 @@
 package com.royal.novel_service.application.service.query;
 
+import com.evo.common.dto.PageDTO;
+import com.royal.novel_service.application.dto.request.novel.NovelSearchRequest;
 import com.royal.novel_service.application.dto.response.NovelDTO;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
 @Service
 public interface NovelQueryService {
-    List<NovelDTO> loadNovels(int novelNumbers);
+    PageDTO<NovelDTO> search(NovelSearchRequest request);
 }

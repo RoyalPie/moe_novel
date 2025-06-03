@@ -7,7 +7,7 @@ import java.util.UUID;
 public interface TagCommandService {
     void create(CreateOrUpdateTagRequest request);
 
-    void update(CreateOrUpdateTagRequest request);
+    void update(UUID tagId, CreateOrUpdateTagRequest request);
 
     void delete(UUID tagId);
 }
