@@ -51,6 +51,9 @@ public class NovelEntity {
     @Column(name = "cover_image_id")
     private UUID coverImage;
 
+    @Column(name = "rating")
+    private Double rating;
+
     @Column(name = "status")
     @Enumerated(EnumType.STRING)
     private NovelStatus status;

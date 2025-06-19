@@ -1,5 +1,6 @@
 package com.royal.novel_service.domain.command.novel;
 
+import com.royal.novel_service.domain.command.chapter.CreateOrUpdateChapterCmd;
 import com.royal.novel_service.infrastructure.support.enums.NovelStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -27,5 +28,5 @@ public class CreateNovelCmd {
 
     private List<CreateNovelGenreCmd> novelGenres;
     private List<CreateNovelTagCmd> novelTags;
-    private List<CreateNovelChapterCmd> novelChapters;
+    private List<CreateOrUpdateChapterCmd> chapters;
 }

@@ -21,6 +21,8 @@ import java.util.UUID;
 public class Review {
     private UUID reviewId;
     private int rating;
+    private UUID novelId;
+    private UUID userId;
     private Instant createdAt;
     private String content;
     private boolean deleted;
@@ -29,6 +31,8 @@ public class Review {
         this.reviewId = IdUtils.newUUID();
         this.rating = cmd.getRating();
         this.content = cmd.getContent();
+        this.userId = cmd.getUserId();
+        this.novelId = cmd.getNovelId();
         this.deleted = false;
     }
 

@@ -1,5 +1,6 @@
 package com.royal.novel_service.infrastructure.persistence.entity;
 
+import com.evo.common.validator.ValidateConstraint;
 import com.royal.novel_service.infrastructure.support.enums.NovelStatus;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -33,8 +34,11 @@ import java.util.UUID;
 @Table(name = "chapters")
 public class ChapterEntity {
     @Id
-    @Column(columnDefinition = "UUID", updatable = false, nullable = false)
+    @Column(columnDefinition = "UUID", length = ValidateConstraint.LENGTH.ID_MAX_LENGTH)
     private UUID chapterId;
+
+    @Column(columnDefinition = "UUID", length = ValidateConstraint.LENGTH.ID_MAX_LENGTH)
+    private UUID novelId;
 
     @NotBlank
     @Column(name = "title", nullable = false)

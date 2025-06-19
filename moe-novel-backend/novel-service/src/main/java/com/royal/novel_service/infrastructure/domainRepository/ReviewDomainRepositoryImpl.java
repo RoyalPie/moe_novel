@@ -6,10 +6,12 @@ import com.royal.novel_service.domain.repository.ReviewDomainRepository;
 import com.royal.novel_service.infrastructure.persistence.entity.ReviewEntity;
 import com.royal.novel_service.infrastructure.persistence.mapper.ReviewEntityMapper;
 import com.royal.novel_service.infrastructure.persistence.repository.ReviewEntityRepository;
+import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 import java.util.UUID;
 
+@Repository
 public class ReviewDomainRepositoryImpl extends AbstractDomainRepository<Review, ReviewEntity, UUID>
         implements ReviewDomainRepository {
     private final ReviewEntityMapper reviewEntityMapper;

@@ -1,5 +1,6 @@
 package com.evo.common.webapp.support;
 
+import com.evo.common.UserAuthentication;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.security.core.Authentication;
@@ -9,7 +10,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.UUID;
 
 public final class SecurityUtils {
 
@@ -19,6 +22,15 @@ public final class SecurityUtils {
     public static Optional<String> getCurrentUser() {
         SecurityContext securityContext = SecurityContextHolder.getContext();
         return Optional.ofNullable(extractPrincipal(securityContext.getAuthentication()));
+    }
+    public static Optional<UUID> getCurrentUserLoginId() {
+        SecurityContext securityContext = SecurityContextHolder.getContext();
+        Authentication authentication = securityContext.getAuthentication();
+        if (Objects.nonNull(authentication) && authentication instanceof UserAuthentication userAuthentication) {
+            return Objects.nonNull(userAuthentication.getUserId()) ? Optional.of(userAuthentication.getUserId()) : Optional.empty();
+        } else {
+            return Optional.empty();
+        }
     }
 
     private static String extractPrincipal(Authentication authentication) {

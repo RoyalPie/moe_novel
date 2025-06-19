@@ -8,7 +8,9 @@ import java.util.UUID;
 
 public interface NovelCommandService {
     NovelDTO create(CreateNovelRequest request);
+
     NovelDTO update(UpdateNovelRequest request, UUID novelId);
+
     NovelDTO delete(UUID novelId);
 
 }

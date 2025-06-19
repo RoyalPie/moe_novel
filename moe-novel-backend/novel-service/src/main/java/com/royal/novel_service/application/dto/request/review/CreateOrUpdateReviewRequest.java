@@ -1,4 +1,4 @@
-package com.royal.novel_service.application.dto.request.chapter;
+package com.royal.novel_service.application.dto.request.review;
 
 import com.evo.common.dto.request.Request;
 import lombok.AllArgsConstructor;
@@ -14,9 +14,9 @@ import java.util.UUID;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class CreateOrUpdateChapterRequest extends Request {
-    private UUID chapterId;
-    private String title;
-    private int chapterNumber;
+public class CreateOrUpdateReviewRequest extends Request {
+    private UUID reviewId;
+    private int rating;
     private String content;
+
 }

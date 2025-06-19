@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Component
@@ -47,6 +48,7 @@ public class CustomAuthenticationFilter extends OncePerRequestFilter {
 
         Boolean isRoot = Boolean.FALSE;
         Boolean isClient = Boolean.FALSE;
+        UUID userId = null;
 
         Optional<UserAuthority> optionalUserAuthority = enrichAuthority(token);
         //@TODO enrich
@@ -55,6 +57,7 @@ public class CustomAuthenticationFilter extends OncePerRequestFilter {
         if (optionalUserAuthority.isPresent()) {
             UserAuthority userAuthority = optionalUserAuthority.get();
             isRoot = userAuthority.getIsRoot();
+            userId = userAuthority.getUserId();
 
             // Convert permissions to Spring Security authorities
             grantedPermissions = userAuthority.getGrantedPermissions().stream()
@@ -70,7 +73,7 @@ public class CustomAuthenticationFilter extends OncePerRequestFilter {
 
         User principal = new User(username, "", grantedPermissions);
         AbstractAuthenticationToken auth =
-                new UserAuthentication(principal, token, grantedPermissions, isRoot, isClient);
+                new UserAuthentication(principal, token, grantedPermissions, userId, isRoot, isClient);
 
         SecurityContextHolder.getContext().setAuthentication(auth);
         filterChain.doFilter(request, response);

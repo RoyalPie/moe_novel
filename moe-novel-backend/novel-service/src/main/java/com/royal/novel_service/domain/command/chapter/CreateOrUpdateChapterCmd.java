@@ -14,6 +14,7 @@ import java.util.UUID;
 public class CreateOrUpdateChapterCmd {
     private UUID chapterId;
     private String title;
+    private UUID novelId;
     private int chapterNumber;
     private String content;
 }

@@ -7,7 +7,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.royal.novel_service.domain.Chapter;
 import com.royal.novel_service.domain.Genre;
 import com.royal.novel_service.domain.Novel;
-import com.royal.novel_service.domain.NovelChapter;
 import com.royal.novel_service.domain.NovelGenre;
 import com.royal.novel_service.domain.command.CreateOrUpdateGenreCmd;
 import com.royal.novel_service.domain.command.chapter.CreateOrUpdateChapterCmd;
