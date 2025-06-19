@@ -6,6 +6,8 @@ import java.util.UUID;
 
 public interface GenreCommandService {
     void create(CreateOrUpdateGenreRequest request);
+
     void update(UUID genreId, CreateOrUpdateGenreRequest request);
+
     void delete(UUID genreId);
 }

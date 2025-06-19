@@ -2,6 +2,7 @@ package com.royal.iam_service.presentation.rest;
 
 import com.evo.common.dto.event.SyncUserEvent;
 import com.evo.common.dto.request.SyncUserRequest;
+import com.evo.common.enums.SyncActionType;
 import com.royal.iam_service.application.mapper.SyncMapper;
 import com.royal.iam_service.domain.User;
 import com.royal.iam_service.domain.repository.UserDomainRepository;
@@ -29,7 +30,7 @@ public class TestController {
         for (User user : users) {
             SyncUserRequest request = syncMapper.from(user);
             SyncUserEvent syncUserEvent = SyncUserEvent.builder()
-                    .syncAction("CREATE_USER")
+                    .syncAction(SyncActionType.CREATED)
                     .syncUserRequest(request)
                     .build();
             CompletableFuture<SendResult<String, Object>> future = kafkaTemplate.send("sync-user", syncUserEvent);

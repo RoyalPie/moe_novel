@@ -1,11 +1,14 @@
 package com.royal.novel_service.domain;
 
 import com.evo.common.webapp.support.IdUtils;
+import com.royal.novel_service.domain.command.CreateOrUpdateReviewCmd;
+import com.royal.novel_service.domain.command.chapter.CreateOrUpdateChapterCmd;
 import com.royal.novel_service.domain.command.novel.CreateNovelChapterCmd;
 import com.royal.novel_service.domain.command.novel.CreateNovelCmd;
 import com.royal.novel_service.domain.command.novel.CreateNovelGenreCmd;
 import com.royal.novel_service.domain.command.novel.CreateNovelTagCmd;
 import com.royal.novel_service.domain.command.novel.UpdateNovelCmd;
+import com.royal.novel_service.infrastructure.support.constants.Constant;
 import com.royal.novel_service.infrastructure.support.enums.NovelStatus;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -19,6 +22,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 
 @EqualsAndHashCode(callSuper = false)
@@ -35,6 +39,7 @@ public class Novel {
     private String description;
     private UUID coverImage;
     private NovelStatus status;
+    private Double rating;
     private int totalChapters;
     private int totalViews;
     private int totalFollows;
@@ -43,8 +48,8 @@ public class Novel {
 
     private List<NovelGenre> novelGenres;
     private List<NovelTag> novelTags;
-    private List<NovelReview> novelReviews;
-    private List<NovelChapter> novelChapters;
+    private List<Review> reviews;
+    private List<Chapter> chapters;
 
     public Novel(CreateNovelCmd cmd) {
         this.novelId = IdUtils.newUUID();
@@ -60,7 +65,7 @@ public class Novel {
         this.deleted = false;
         this.novelGenres = new ArrayList<>();
         this.novelTags = new ArrayList<>();
-        this.novelChapters = new ArrayList<>();
+        this.chapters = new ArrayList<>();
 
         if (cmd.getNovelGenres() != null) {
             cmd.getNovelGenres().forEach(createNovelGenrecmd -> {
@@ -76,10 +81,10 @@ public class Novel {
             });
         }
 
-        if (cmd.getNovelChapters() != null) {
-            cmd.getNovelChapters().forEach(createNovelChaptercmd -> {
+        if (cmd.getChapters() != null) {
+            cmd.getChapters().forEach(createNovelChaptercmd -> {
                 createNovelChaptercmd.setNovelId(this.novelId);
-                novelChapters.add(new NovelChapter(createNovelChaptercmd));
+                chapters.add(new Chapter(createNovelChaptercmd));
             });
         }
 
@@ -139,26 +144,26 @@ public class Novel {
                 }
             }
         }
-        if (cmd.getNovelChapters() != null && !cmd.getNovelChapters().isEmpty()) {
-            if (this.novelChapters == null) {
-                this.novelChapters = new ArrayList<>();
+        if (cmd.getChapters() != null && !cmd.getChapters().isEmpty()) {
+            if (this.chapters == null) {
+                this.chapters = new ArrayList<>();
             }
             this.updatedAt = Instant.now();
             // Map existing roles by chapterId
-            Map<UUID, NovelChapter> existingChaptersMap = new HashMap<>();
-            for (NovelChapter chapter : this.novelChapters) {
+            Map<UUID, Chapter> existingChaptersMap = new HashMap<>();
+            for (Chapter chapter : this.chapters) {
                 existingChaptersMap.put(chapter.getChapterId(), chapter);
             }
 
             // Update or add new chapters
-            for (CreateNovelChapterCmd novelChapterCmd : cmd.getNovelChapters()) {
+            for (CreateOrUpdateChapterCmd novelChapterCmd : cmd.getChapters()) {
                 UUID chapterId = novelChapterCmd.getChapterId();
                 novelChapterCmd.setNovelId(this.novelId);
                 if (!existingChaptersMap.containsKey(chapterId)) {
-                    this.novelChapters.add(new NovelChapter(novelChapterCmd));
+                    this.chapters.add(new Chapter(novelChapterCmd));
                 }
             }
-            this.totalChapters = novelChapters.size();
+            this.totalChapters = chapters.size();
         }
     }
 

@@ -1,5 +1,6 @@
 package com.royal.novel_service.infrastructure.persistence.entity;
 
+import com.evo.common.validator.ValidateConstraint;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
@@ -24,13 +25,13 @@ import java.util.UUID;
 @Table(name = "novel_genres")
 public class NovelGenreEntity {
     @Id
-    @Column(name = "id")
+    @Column(name = "id", length = ValidateConstraint.LENGTH.ID_MAX_LENGTH)
     private UUID id;
 
-    @Column(name = "novel_id")
+    @Column(name = "novel_id", length = ValidateConstraint.LENGTH.ID_MAX_LENGTH)
     private UUID novelId;
 
-    @Column(name = "genre_id")
+    @Column(name = "genre_id", length = ValidateConstraint.LENGTH.ID_MAX_LENGTH)
     private UUID genreId;
 
     @Column(name = "deleted")

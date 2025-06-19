@@ -6,13 +6,11 @@ import com.royal.novel_service.application.dto.request.novel.NovelSearchRequest;
 import com.royal.novel_service.application.dto.response.NovelDTO;
 import com.royal.novel_service.application.mapper.QueryMapper;
 import com.royal.novel_service.application.service.query.NovelQueryService;
-import com.royal.novel_service.domain.Novel;
 import com.royal.novel_service.domain.query.NovelSearchQuery;
 import com.royal.novel_service.domain.repository.NovelDomainRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -23,7 +21,7 @@ public class NovelQueryServiceImpl implements NovelQueryService {
     private final QueryMapper queryMapper;
 
     @Override
-    public PageDTO<NovelDTO> search(NovelSearchRequest request){
+    public PageDTO<NovelDTO> search(NovelSearchRequest request) {
         NovelSearchQuery query = queryMapper.from(request);
         Long total = novelDomainRepository.count(query);
         if (total == 0) return PageDTO.empty();

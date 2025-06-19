@@ -5,7 +5,9 @@ import com.royal.novel_service.application.dto.request.chapter.CreateOrUpdateCha
 import java.util.UUID;
 
 public interface ChapterCommandService {
-    void create(CreateOrUpdateChapterRequest request);
+    void create(UUID novelId, CreateOrUpdateChapterRequest request);
+
     void update(CreateOrUpdateChapterRequest request);
+
     void delete(UUID chapterId);
 }

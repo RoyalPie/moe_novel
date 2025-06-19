@@ -8,15 +8,12 @@ import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
 import jakarta.persistence.TypedQuery;
 import org.springframework.stereotype.Repository;
-import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
-import java.util.UUID;
 
 @Repository
 public class NovelEntityRepositoryImpl implements NovelEntityRepositoryCustom {
@@ -71,7 +68,7 @@ public class NovelEntityRepositoryImpl implements NovelEntityRepositoryCustom {
                             "  join TagEntity g on ng.tagId = g.tagId" +
                             "  where ng.novelId = e.id and g.tagName = :tag" +
                             ") ");
-            values.put("genre", searchNovelQuery.getGenre().trim());
+            values.put("tag", searchNovelQuery.getTag().trim());
         }
 
         return sql.toString();

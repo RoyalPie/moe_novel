@@ -20,12 +20,14 @@ import java.util.UUID;
 public class Chapter {
     private UUID chapterId;
     private String title;
+    private UUID novelId;
     private int chapterNumber;
     private String content;
 
     public Chapter(CreateOrUpdateChapterCmd cmd) {
         this.chapterId = IdUtils.newUUID();
         this.title = cmd.getTitle();
+        this.novelId = cmd.getNovelId();
         this.chapterNumber = cmd.getChapterNumber();
         this.content = cmd.getContent();
     }
